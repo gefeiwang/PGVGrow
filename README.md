@@ -1,2 +1,2 @@
 # PGVGrow
-An implementation of VGrow using Progressive Growing method.
+An tensorflow implementation of VGrow using Progressive Growing method.
