@@ -52,27 +52,27 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 <table align='center'>
 <tr align='center'>
 <td> </td>
-<td> Resolution 4x4 </td>
-<td> Resolution 8x8 </td>
-<td> Resolution 16x16 </td>
-<td> Resolution 32x32 </td>
+<td> Resolution4x4 </td>
+<td> Resolution8x8 </td>
+<td> Resolution16x16 </td>
+<td> Resolution32x32 </td>
 <td> Resolution64x64 </td>
 </tr>
 <tr>
 <td> Celeba </td>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
+<td><img src = 'examples/celeba4.png' height = '160px'>
+<td><img src = 'examples/celeba8.png' height = '160px'>
+<td><img src = 'examples/celeba16.png' height = '160px'>
+<td><img src = 'examples/celeba32.png' height = '160px'>
+<td><img src = 'examples/celeba64.png' height = '160px'>
 </tr>
 <tr>
 <td> LSUN (Church) </td>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
+<td><img src = 'examples/church4.png' height = '160px'>
+<td><img src = 'examples/church8.png' height = '160px'>
+<td><img src = 'examples/church16.png' height = '160px'>
+<td><img src = 'examples/church32.png' height = '160px'>
+<td><img src = 'examples/church64.png' height = '160px'>
 </tr>
 </table>
 
@@ -96,17 +96,31 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr>
 <td> Fashion-mnist </td>
-<td><img src = '' height = '190px'>
-<td><img src = '' height = '190px'>
-<td><img src = '' height = '190px'>
-<td><img src = '' height = '190px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
 </tr>
 <tr>
 <td> Cifar10 </td>
-<td><img src = '' height = '190px'>
-<td><img src = '' height = '190px'>
-<td><img src = '' height = '190px'>
-<td><img src = '' height = '190px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+</tr>
+<tr>
+<td> Celeba </td>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+</tr>
+<tr>
+<td> LSUN(Church) </td>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
+<td><img src = '' height = '160px'>
 </tr>
 </table>
 
