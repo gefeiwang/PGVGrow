@@ -83,9 +83,9 @@ We show all dataset final resolution results from each f-divergence.
 <tr align='center'>
 <td> </td>
 <td> KL-divergence </td>
-<td> Js-divergence </td>
+<td> JS-divergence </td>
 <td> Jef-divergence </td>
-<td> Logd-divergence </td>
+<td> LogD-divergence </td>
 </tr>
 <tr>
 <td> Mnist </td>
@@ -103,10 +103,10 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr>
 <td> Cifar10 </td>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
+<td><img src = 'examples/cifar-KL.png' height = '160px'>
+<td><img src = 'examples/cifar-JS.png' height = '160px'>
+<td><img src = 'examples/cifar-Jef.png' height = '160px'>
+<td><img src = 'examples/cifar-LogD.png' height = '160px'>
 </tr>
 <tr>
 <td> Celeba </td>
