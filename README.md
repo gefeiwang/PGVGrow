@@ -34,10 +34,17 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 </tr>
 <tr>
 <td> Fashion-mnist </td>
+<<<<<<< HEAD
+<td><img src = 'examples/fashionmnist4.png' height = '160px'>
+<td><img src = 'examples/fashionmnist8.png' height = '160px'>
+<td><img src = 'examples/fashionmnist16.png' height = '160px'>
+<td><img src = 'examples/fashionmnist32.png' height = '160px'>
+=======
 <td><img src = '' height = '160px'>
 <td><img src = '' height = '160px'>
 <td><img src = '' height = '160px'>
 <td><img src = '' height = '160px'>
+>>>>>>> ead91fdffd6cd495b67173cef3ebd895bf7a1842
 </tr>
 <tr>
 <td> Cifar-10 </td>
@@ -83,9 +90,9 @@ We show all dataset final resolution results from each f-divergence.
 <tr align='center'>
 <td> </td>
 <td> KL-divergence </td>
-<td> Js-divergence </td>
+<td> JS-divergence </td>
 <td> Jef-divergence </td>
-<td> Logd-divergence </td>
+<td> LogD-divergence </td>
 </tr>
 <tr>
 <td> Mnist </td>
@@ -103,10 +110,10 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr>
 <td> Cifar10 </td>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
+<td><img src = 'examples/cifar-KL.png' height = '160px'>
+<td><img src = 'examples/cifar-JS.png' height = '160px'>
+<td><img src = 'examples/cifar-Jef.png' height = '160px'>
+<td><img src = 'examples/cifar-LogD.png' height = '160px'>
 </tr>
 <tr>
 <td> Celeba </td>
