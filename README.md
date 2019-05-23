@@ -27,24 +27,24 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 </tr>
 <tr>
 <td> Mnist </td>
-<td><img src = '' height = '230px'>
-<td><img src = '' height = '230px'>
-<td><img src = '' height = '230px'>
-<td><img src = '' height = '230px'>
+<td><img src = '' height = '190px'>
+<td><img src = '' height = '190px'>
+<td><img src = '' height = '190px'>
+<td><img src = '' height = '190px'>
 </tr>
 <tr>
 <td> Fashion-mnist </td>
-<td><img src = '' height = '230px'>
-<td><img src = '' height = '230px'>
-<td><img src = '' height = '230px'>
-<td><img src = '' height = '230px'>
+<td><img src = '' height = '190px'>
+<td><img src = '' height = '190px'>
+<td><img src = '' height = '190px'>
+<td><img src = '' height = '190px'>
 </tr>
 <tr>
 <td> Cifar-10 </td>
-<td><img src = '' height = '230px'>
-<td><img src = '' height = '230px'>
-<td><img src = '' height = '230px'>
-<td><img src = '' height = '230px'>
+<td><img src = '' height = '190px'>
+<td><img src = '' height = '190px'>
+<td><img src = '' height = '190px'>
+<td><img src = '' height = '190px'>
 </tr>
 </table>
 
