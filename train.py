@@ -30,6 +30,10 @@ tf.app.flags.DEFINE_float('coef_gp', 1., 'Coefficient of gradient penalty')
 tf.app.flags.DEFINE_float('target_gp', 1., 'Target of gradient penalty')
 
 tf.app.flags.DEFINE_float('coef_smoothing', 0.99, 'Coefficient of generator moving average')
+
+tf.app.flags.DEFINE_bool('resume_training', False, 'Resume Training?')
+tf.app.flags.DEFINE_integer('resume_num', 0, 'Resume number of images')
+
 FLAGS = tf.app.flags.FLAGS
 
 os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu
@@ -76,11 +80,11 @@ def coef_div(d_score, coef=1):
 
     if FLAGS.divergence == 'KL':
         s = np.ones_like(d_score)
-    elif FLAGS.divergence == 'Logd':
+    elif FLAGS.divergence == 'LogD':
         s = 1 / (1 + np.exp(d_score))
     elif FLAGS.divergence == 'JS': # ensure numerical stablity
         s = 1 / (1 + 1/(1e-6 + np.exp(d_score)))
-    elif FLAGS.divergence == 'Jef':
+    elif FLAGS.divergence == 'Jef': # ensure numerical stablity
         s = np.clip(1 + np.exp(d_score), 1, 100)
 
     return coef * np.reshape(s, [-1, 1, 1, 1])
@@ -94,8 +98,8 @@ G_z_p  = tf.placeholder(dtype=tf.float32, shape=[None, resolution, resolution, n
 G_Sz_p = tf.placeholder(dtype=tf.float32, shape=[None, resolution, resolution, num_channels], name='pool_particles')
 lod_in = tf.placeholder(dtype=tf.float32, shape=[], name='level_of_details')
 
-G_z   = generator(z_p, lod_in, num_channels, resolution, FLAGS.z_dim, num_features)
-Gs_z  = generator(z_p, lod_in, num_channels, resolution, FLAGS.z_dim, num_features, is_smoothing = True)
+G_z  = generator(z_p, lod_in, num_channels, resolution, FLAGS.z_dim, num_features)
+Gs_z = generator(z_p, lod_in, num_channels, resolution, FLAGS.z_dim, num_features, is_smoothing = True)
 
 # discriminator loss:
 d_real_logits = discriminator(x_p, lod_in, num_channels, resolution, num_features)
@@ -135,7 +139,7 @@ reset_optimizer_g = tf.variables_initializer(optimizer_g.variables())
 
 ################################ moving average of generator ################################
 
-G_trainables = OrderedDict([(var.name[len('generator/'):], var) for var in tf.trainable_variables('generator' + '/')])
+G_trainables  = OrderedDict([(var.name[len('generator/'):], var) for var in tf.trainable_variables('generator' + '/')])
 Gs_trainables = OrderedDict([(var.name[len('generator_smoothing/'):], var) for var in tf.trainable_variables('generator_smoothing' + '/')])
 
 with tf.name_scope('generator_smoothing/'):
@@ -148,26 +152,30 @@ with tf.name_scope('generator_smoothing/'):
 
 ################################ training ################################
 
+saver = tf.train.Saver()
+
 resolution_log2 = int(np.log2(resolution))
 
 with tf.Session() as sess:
 
     iterators = [data_tool.data_iterator(dataset=FLAGS.dataset, lod_in=lod, batch_size=batchsize_dict[2**(resolution_log2-lod)], resolution_log2=resolution_log2) for lod in range(int(np.log2(resolution/FLAGS.init_resolution))+1)]
-    sess.run(tf.global_variables_initializer())
-    num_img = 0
-    tick_kimg = 0
-    z_fixed = np.random.randn(10000, FLAGS.z_dim)
 
-    prev_lod = -1.0
+    if not FLAGS.resume_training:
+        sess.run(tf.global_variables_initializer())
+        num_img = 0
+        tick_kimg = 0
+        prev_lod = -1.0
+
+    else:
+        saver.restore(sess, os.path.join(out_path, 'networks-%08d.ckpt' % FLAGS.resume_num))
+        num_img = FLAGS.resume_num
+        tick_kimg = (num_img // 1000)
+        
+    cur_lod = lod(num_img)
+    z_fixed = np.random.randn(10000, FLAGS.z_dim)
     count = 0
 
     while num_img <= FLAGS.total_nimg:
-
-        cur_lod = lod(num_img)
-
-        # reset Adam optimizers states when increasing resolution:
-        if np.floor(cur_lod) != np.floor(prev_lod) or np.ceil(cur_lod) != np.ceil(prev_lod):
-            sess.run([reset_optimizer_d, reset_optimizer_g])
 
         prev_lod = cur_lod
 
@@ -209,11 +217,16 @@ with tf.Session() as sess:
 
             sess.run(update_g, feed_dict={z_p: Sz, G_Sz_p: P, lod_in: cur_lod})
 
+        cur_lod = lod(num_img)
+
+        # reset Adam optimizers states when increasing resolution:
+        if np.floor(cur_lod) != np.floor(prev_lod) or np.ceil(cur_lod) != np.ceil(prev_lod):
+            sess.run([reset_optimizer_d, reset_optimizer_g])
+
         if (num_img // 1000) >= tick_kimg + 150:
             count += 1
 
             tick_kimg = (num_img // 1000)
-            cur_lod = lod(num_img)
             real_loss, fake_loss = sess.run([loss_d_real, loss_d_fake], feed_dict={x_p: x, G_z_p: P[sample_index], lod_in: cur_lod})
             G_loss               = sess.run(loss_g, feed_dict={z_p: Sz, G_Sz_p: P, lod_in: cur_lod})
             
@@ -239,5 +252,8 @@ with tf.Session() as sess:
                 for i in tqdm(range(10000)):
                     img = sess.run(Gs_z, feed_dict={z_p: np.expand_dims(z_fixed[i], axis=0), lod_in: cur_lod})
                     img = (img + 1) / 2
-                    imageio.imsave(os.path.join(out_path, 'fakes%06d' % (num_img // 1000), '%05d.jpg' % i), np.rint(img[0]*255).clip(0, 255).astype(np.uint8))
+                    imageio.imsave(os.path.join(out_path, 'fakes%06d' % (num_img // 1000), '%05d.png' % i), np.rint(img[0]*255).clip(0, 255).astype(np.uint8))
+
+                # save model
+                saver.save(sess, os.path.join(out_path, 'networks-%08d.ckpt' % num_img))
 
