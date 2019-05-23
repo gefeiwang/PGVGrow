@@ -89,10 +89,10 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr>
 <td> Mnist </td>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
+<td><img src = 'examples/mnist-KL.png' height = '160px'>
+<td><img src = 'examples/mnist-JS.png' height = '160px'>
+<td><img src = 'examples/mnist-Jef.png' height = '160px'>
+<td><img src = 'examples/mnist-LogD.png' height = '160px'>
 </tr>
 <tr>
 <td> Fashion-mnist </td>
