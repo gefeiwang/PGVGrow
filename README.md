@@ -116,7 +116,7 @@ We show all dataset final resolution results from each f-divergence.
 <tr align='center'>
 <td> Score </td>
 <td> FID: 2.00 </td>
-<td> **FID: 1.85** </td>
+<td> FID: 1.85 </td>
 <td> FID: 1.94 </td>
 <td> FID: 2.15 </td>
 </tr>
@@ -129,7 +129,7 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr align='center'>
 <td> Score </td>
-<td> **FID: 5.20** </td>
+<td> FID: 5.20 </td>
 <td> FID: 5.29 </td>
 <td> FID: 5.55 </td>
 <td> FID: 5.48 </td>
@@ -145,7 +145,7 @@ We show all dataset final resolution results from each f-divergence.
 <td> Score </td>
 <td> FID: 20.70 </td>
 <td> FID: 20.63 </td>
-<td> **FID: 20.27** </td>
+<td> FID: 20.27 </td>
 <td> FID: 21.93 </td>
 </tr>
 <tr>
@@ -159,7 +159,7 @@ We show all dataset final resolution results from each f-divergence.
 <td> Score </td>
 <td> FID: 7.21 </td>
 <td> FID: 7.48 </td>
-<td> **FID:** 6.66 </td>
+<td> FID: 6.66 </td>
 <td> FID: 7.89 </td>
 </tr>
 <tr>
