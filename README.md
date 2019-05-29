@@ -113,6 +113,13 @@ We show all dataset final resolution results from each f-divergence.
 <td><img src = 'examples/mnist-Jef.png' height = '160px'>
 <td><img src = 'examples/mnist-LogD.png' height = '160px'>
 </tr>
+<tr align='center'>
+<td> Score </td>
+<td> FID: 2.00 </td>
+<td> FID: 1.85 </td>
+<td> FID: 1.94 </td>
+<td> FID: 2.15 </td>
+</tr>
 <tr>
 <td> Fashion-mnist </td>
 <td><img src = 'examples/fashionmnist-KL.png' height = '160px'>
@@ -120,12 +127,26 @@ We show all dataset final resolution results from each f-divergence.
 <td><img src = 'examples/fashionmnist-Jef.png' height = '160px'>
 <td><img src = 'examples/fashionmnist-LogD.png' height = '160px'>
 </tr>
+<tr align='center'>
+<td> Score </td>
+<td> FID: 5.20 </td>
+<td> FID: 5.29 </td>
+<td> FID: 5.55 </td>
+<td> FID: 5.48 </td>
+</tr>
 <tr>
 <td> Cifar10 </td>
 <td><img src = 'examples/cifar-KL.png' height = '160px'>
 <td><img src = 'examples/cifar-JS.png' height = '160px'>
 <td><img src = 'examples/cifar-Jef.png' height = '160px'>
 <td><img src = 'examples/cifar-LogD.png' height = '160px'>
+</tr>
+<tr align='center'>
+<td> Score </td>
+<td> FID: 20.70 </td>
+<td> FID: 20.63 </td>
+<td> FID: 20.27 </td>
+<td> FID: 21.93 </td>
 </tr>
 <tr>
 <td> Celeba </td>
