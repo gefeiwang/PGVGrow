@@ -51,20 +51,39 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 
 <table align='center'>
 <tr align='center'>
+<td> Resolution </td>
+<td> 4x4 </td>
+<td> 8x8 </td>
+<td> 16x16 </td>
+</tr>
+<tr>
+<td> Celeba </td>
+<td><img src = 'examples/celeba4.png' height = '196px'>
+<td><img src = 'examples/celeba8.png' height = '196px'>
+<td><img src = 'examples/celeba16.png' height = '196px'>
+</tr>
+<tr align='center'>
+<td> Resolution </td>
+<td> 32x32 </td>
+<td> 64x64 </td>
+<td> 128x128 </td>
+</tr>
+<tr>
+<td> Celeba </td>
+<td><img src = 'examples/celeba32.png' height = '196px'>
+<td><img src = 'examples/celeba64.png' height = '196px'>
+<td><img src = 'examples/celeba128.png' height = '196px'>
+</tr>
+</table>
+
+<table align='center'>
+<tr align='center'>
 <td> </td>
 <td> Resolution4x4 </td>
 <td> Resolution8x8 </td>
 <td> Resolution16x16 </td>
 <td> Resolution32x32 </td>
 <td> Resolution64x64 </td>
-</tr>
-<tr>
-<td> Celeba </td>
-<td><img src = 'examples/celeba4.png' height = '160px'>
-<td><img src = 'examples/celeba8.png' height = '160px'>
-<td><img src = 'examples/celeba16.png' height = '160px'>
-<td><img src = 'examples/celeba32.png' height = '160px'>
-<td><img src = 'examples/celeba64.png' height = '160px'>
 </tr>
 <tr>
 <td> LSUN (Church) </td>
