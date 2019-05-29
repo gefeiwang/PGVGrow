@@ -96,10 +96,10 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr>
 <td> Fashion-mnist </td>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
+<td><img src = 'examples/fashionmnist-KL.png' height = '160px'>
+<td><img src = 'examples/fashionmnist-JS.png' height = '160px'>
+<td><img src = 'examples/fashionmnist-Jef.png' height = '160px'>
+<td><img src = 'examples/fashionmnist-LogD.png' height = '160px'>
 </tr>
 <tr>
 <td> Cifar10 </td>
@@ -110,24 +110,31 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr>
 <td> Celeba </td>
+<td><img src = 'examples/celebakl.png' height = '160px'>
 <td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
+<td><img src = 'examples/celebajef.png' height = '160px'>
+<td><img src = 'examples/celebalogd.png' height = '160px'>
 </tr>
 <tr>
 <td> LSUN(Church) </td>
+<td><img src = 'examples/churchkl.png' height = '160px'>
 <td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = '' height = '160px'>
+<td><img src = 'examples/churchjef.png' height = '160px'>
+<td><img src = 'examples/churchlogd.png' height = '160px'>
 </tr>
 </table>
 
-### Quantitive measure
+### High resolution generation
+Here we show the high resolution generation results (256x256) based on LSUN (Church) dataset.
+
+![alt text](https://github.com/gefeiwang/PGVGrow/blob/master/examples/churchhigh.jpg)<br>
 
 
 ## Usage 
+### Command
+We provide all arguments with default value and you can run this program simply by 
+
+```python train.py```
 ### Arguments 
 * `--gpu`: Specific GPU to use. *Default*: `0`
 * `--dataset`: Training dataset. *Default*: `mnist`
