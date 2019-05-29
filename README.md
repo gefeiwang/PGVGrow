@@ -159,7 +159,7 @@ We show all dataset final resolution results from each f-divergence.
 <td> Score </td>
 <td> FID: 7.21 </td>
 <td> FID: 7.48 </td>
-<td> **FID: 6.66** </td>
+<td> **FID:** 6.66 </td>
 <td> FID: 7.89 </td>
 </tr>
 <tr>
