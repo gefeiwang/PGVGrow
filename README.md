@@ -78,20 +78,44 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 
 <table align='center'>
 <tr align='center'>
-<td> </td>
-<td> Resolution4x4 </td>
-<td> Resolution8x8 </td>
-<td> Resolution16x16 </td>
-<td> Resolution32x32 </td>
-<td> Resolution64x64 </td>
+<td> Resolution </td>
+<td> 4x4 </td>
+<td> 8x8 </td>
 </tr>
 <tr align='center'>
 <td> LSUN (Church) </td>
 <td><img src = 'examples/church4.png' height = '384px'>
 <td><img src = 'examples/church8.png' height = '384px'>
-<td><img src = 'examples/church16.png' height = '160px'>
-<td><img src = 'examples/church32.png' height = '160px'>
-<td><img src = 'examples/church64.png' height = '160px'>
+</tr>
+<tr align='center'>
+<td> Resolution </td>
+<td> 16x16 </td>
+<td> 32x32 </td>
+</tr>
+<tr align='center'>
+<td> LSUN (Church) </td>
+<td><img src = 'examples/church16.png' height = '384px'>
+<td><img src = 'examples/church32.png' height = '384px'>
+</tr>
+<tr align='center'>
+<td> Resolution </td>
+<td> 64x64 </td>
+<td> 128x128 </td>
+</tr>
+<tr align='center'>
+<td> LSUN (Church) </td>
+<td><img src = 'examples/church64.png' height = '384px'>
+<td><img src = 'examples/church128.png' height = '384px'>
+</tr>
+<tr align='center'>
+<td> Resolution </td>
+<td> 256x256 </td>
+<td> </td>
+</tr>
+<tr align='center'>
+<td> LSUN (Church) </td>
+<td><img src = 'examples/church256.png' height = '384px'>
+<td> </td>
 </tr>
 </table>
 
