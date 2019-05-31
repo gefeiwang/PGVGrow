@@ -25,22 +25,22 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 <td> Resolution 16x16 </td>
 <td> Resolution 32x32 </td>
 </tr>
-<tr>
-<td> Mnist </td>
+<tr align='center'>
+<td> MNIST </td>
 <td><img src = 'examples/mnist4.png' height = '160px'>
 <td><img src = 'examples/mnist8.png' height = '160px'>
 <td><img src = 'examples/mnist16.png' height = '160px'>
 <td><img src = 'examples/mnist32.png' height = '160px'>
 </tr>
-<tr>
-<td> Fashion-mnist </td>
+<tr align='center'>
+<td> Fashion-MNIST </td>
 <td><img src = 'examples/fashionmnist4.png' height = '160px'>
 <td><img src = 'examples/fashionmnist8.png' height = '160px'>
 <td><img src = 'examples/fashionmnist16.png' height = '160px'>
 <td><img src = 'examples/fashionmnist32.png' height = '160px'>
 </tr>
-<tr>
-<td> Cifar-10 </td>
+<tr align='center'>
+<td> CIFAR-10 </td>
 <td><img src = 'examples/cifar4.png' height = '160px'>
 <td><img src = 'examples/cifar8.png' height = '160px'>
 <td><img src = 'examples/cifar16.png' height = '160px'>
@@ -56,8 +56,8 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 <td> 8x8 </td>
 <td> 16x16 </td>
 </tr>
-<tr>
-<td> Celeba </td>
+<tr align='center'>
+<td> CelebA </td>
 <td><img src = 'examples/celeba4.png' height = '196px'>
 <td><img src = 'examples/celeba8.png' height = '196px'>
 <td><img src = 'examples/celeba16.png' height = '196px'>
@@ -68,8 +68,8 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 <td> 64x64 </td>
 <td> 128x128 </td>
 </tr>
-<tr>
-<td> Celeba </td>
+<tr align='center'>
+<td> CelebA </td>
 <td><img src = 'examples/celeba32.png' height = '196px'>
 <td><img src = 'examples/celeba64.png' height = '196px'>
 <td><img src = 'examples/celeba128.png' height = '196px'>
@@ -85,10 +85,10 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 <td> Resolution32x32 </td>
 <td> Resolution64x64 </td>
 </tr>
-<tr>
+<tr align='center'>
 <td> LSUN (Church) </td>
-<td><img src = 'examples/church4.png' height = '160px'>
-<td><img src = 'examples/church8.png' height = '160px'>
+<td><img src = 'examples/church4.png' height = '384px'>
+<td><img src = 'examples/church8.png' height = '384px'>
 <td><img src = 'examples/church16.png' height = '160px'>
 <td><img src = 'examples/church32.png' height = '160px'>
 <td><img src = 'examples/church64.png' height = '160px'>
@@ -106,8 +106,8 @@ We show all dataset final resolution results from each f-divergence.
 <td> Jef-divergence </td>
 <td> LogD-divergence </td>
 </tr>
-<tr>
-<td> Mnist </td>
+<tr align='center'>
+<td> MNIST </td>
 <td><img src = 'examples/mnist-KL.png' height = '160px'>
 <td><img src = 'examples/mnist-JS.png' height = '160px'>
 <td><img src = 'examples/mnist-Jef.png' height = '160px'>
@@ -120,8 +120,8 @@ We show all dataset final resolution results from each f-divergence.
 <td> FID: 1.94 </td>
 <td> FID: 2.15 </td>
 </tr>
-<tr>
-<td> Fashion-mnist </td>
+<tr align='center'>
+<td> Fashion-MNIST </td>
 <td><img src = 'examples/fashionmnist-KL.png' height = '160px'>
 <td><img src = 'examples/fashionmnist-JS.png' height = '160px'>
 <td><img src = 'examples/fashionmnist-Jef.png' height = '160px'>
@@ -134,8 +134,8 @@ We show all dataset final resolution results from each f-divergence.
 <td> FID: 5.55 </td>
 <td> FID: 5.48 </td>
 </tr>
-<tr>
-<td> Cifar10 </td>
+<tr align='center'>
+<td> CIFAR-10 </td>
 <td><img src = 'examples/cifar-KL.png' height = '160px'>
 <td><img src = 'examples/cifar-JS.png' height = '160px'>
 <td><img src = 'examples/cifar-Jef.png' height = '160px'>
@@ -148,8 +148,8 @@ We show all dataset final resolution results from each f-divergence.
 <td> FID: 20.27 </td>
 <td> FID: 21.93 </td>
 </tr>
-<tr>
-<td> Celeba </td>
+<tr align='center'>
+<td> CelebA </td>
 <td><img src = 'examples/celeba-KL.png' height = '160px'>
 <td><img src = 'examples/celeba-JS.png' height = '160px'>
 <td><img src = 'examples/celeba-Jef.png' height = '160px'>
@@ -162,7 +162,7 @@ We show all dataset final resolution results from each f-divergence.
 <td> FID: 6.66 </td>
 <td> FID: 7.89 </td>
 </tr>
-<tr>
+<tr align='center'>
 <td> LSUN(Church) </td>
 <td><img src = 'examples/churchkl.png' height = '160px'>
 <td><img src = '' height = '160px'>
