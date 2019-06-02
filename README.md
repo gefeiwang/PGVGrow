@@ -188,10 +188,17 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr align='center'>
 <td> LSUN(Church) </td>
-<td><img src = 'examples/churchkl.png' height = '160px'>
-<td><img src = '' height = '160px'>
-<td><img src = 'examples/churchjef.png' height = '160px'>
-<td><img src = 'examples/churchlogd.png' height = '160px'>
+<td><img src = 'examples/church-KL.png' height = '160px'>
+<td><img src = 'examples/church-JS.png' height = '160px'>
+<td><img src = 'examples/church-Jef.png' height = '160px'>
+<td><img src = 'examples/church-LogD.png' height = '160px'>
+</tr>
+<tr align='center'>
+<td> Score </td>
+<td> FID: 15.07 </td>
+<td> FID: 28.43 </td>
+<td> FID: 16.01 </td>
+<td> FID: 13.09 </td>
 </tr>
 </table>
 
