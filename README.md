@@ -1,5 +1,5 @@
-# Progressive Training of Variational Gradient Flow
-A tensorflow implementation of VGrow by using progressive training method descriped in the following paper:
+# Progressive Growing of Variational Gradient Flow
+A tensorflow implementation of VGrow by using progressive growing method descriped in the following paper:
 * [Deep Generative Learning via Variational Gradient Flow](https://arxiv.org/abs/1901.08469).
 * [Progressive Growing of GANs for Improved Quality, Stability, and Variation](https://arxiv.org/abs/1710.10196).
 
