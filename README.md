@@ -6,7 +6,7 @@ A tensorflow implementation of VGrow by using progressive growing method descrip
 ## System requirements
 
 * We only test our model on Linux. 
-* 64-bit Python 3.6 and Tensorflow 1.12.
+* 64-bit Python 3.6 and Tensorflow 1.12.0
 * When you want to generate higher resolution image than 128x128, We recommend GPU with at least 16GB memory.
 * NVIDIA driver 384.145  or newer, CUDA toolkit 9.0 or newer, cuDNN 7.1.2 or newer. We test the code based on the following two configuration.
   * NIVDIA driver 384.145, CUDA V9.0.176, Tesla V100
