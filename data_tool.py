@@ -316,6 +316,49 @@ def create_portrait_tfr(data_dir, tfrecord_dir='portrait'):
                 'data': tf.train.Feature(bytes_list=tf.train.BytesList(value=[quant.tostring()]))}))
             tfr_writer.write(example.SerializeToString())
 
+
+def create_cartoon_tfr(data_dir, tfrecord_dir='cartoon'):
+    # "data_dir" should be a folder containing 202599 218*178 png files
+
+    resolution_log2 = int(np.log2(96))
+
+    # reading raw images
+    import PIL.Image
+    glob_pattern = os.path.join(data_dir, '*.jpg')
+    image_filenames = sorted(glob.glob(glob_pattern))
+
+    # creating tfrecords
+    if not os.path.exists('datasets'):
+        os.mkdir('datasets')
+    assert os.path.exists(os.path.join('datasets', tfrecord_dir))==False
+    os.mkdir(os.path.join('datasets', tfrecord_dir))
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals'))
+
+    tfr_writers = []
+    tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
+
+    for lod in range(resolution_log2 - 1):
+        tfr_file = os.path.join('datasets', tfrecord_dir) + '/cartoon%02d.tfrecords' % (resolution_log2 - lod)
+        tfr_writers.append(tf.python_io.TFRecordWriter(tfr_file, tfr_opt))
+
+    images_num = len(image_filenames)
+    order = np.arange(images_num)
+    np.random.RandomState(123).shuffle(order)
+
+    for idx in range(images_num):
+        img = np.asarray(PIL.Image.open(image_filenames[order[idx]]).resize((96,96)))
+        if idx < 10000:
+            imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals', '%06d.png' % idx), img)
+        for lod, tfr_writer in enumerate(tfr_writers):
+            if lod:
+                img = img.astype(np.float32)
+                img = (img[0::2, 0::2] + img[0::2, 1::2] + img[1::2, 0::2] + img[1::2, 1::2]) * 0.25
+            quant = np.rint(img).clip(0, 255).astype(np.uint8)
+            example = tf.train.Example(features=tf.train.Features(feature={
+                'shape': tf.train.Feature(int64_list=tf.train.Int64List(value=quant.shape)),
+                'data': tf.train.Feature(bytes_list=tf.train.BytesList(value=[quant.tostring()]))}))
+            tfr_writer.write(example.SerializeToString())
+
 def data_iterator(dataset, lod_in, batch_size, resolution_log2):
     
     tfrecord_dir = os.path.join('datasets', dataset)
