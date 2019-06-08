@@ -2,6 +2,8 @@ import tensorflow as tf
 import numpy as np
 import imageio
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+from glob import glob
 from tqdm import tqdm
 from collections import OrderedDict
 
@@ -41,33 +43,16 @@ os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu
 np.random.seed(FLAGS.seed)
 tf.random.set_random_seed(FLAGS.seed)
 
-# if FLAGS.dataset in ['mnist', 'fashionmnist']: # 32*32*1
-#     num_channels = 1
-#     resolution = 32
-#     num_features = 256
-# elif FLAGS.dataset == 'cifar10':
-#     num_channels = 3
-#     resolution = 32
-#     num_features = 256
-# elif FLAGS.dataset in ['celeba', 'cartoon']:
-#     num_channels = 3
-#     resolution = 128
-#     num_features = 256
-# elif FLAGS.dataset in ['lsun', 'portrait']:
-#     num_channels = 3
-#     resolution = 256
-#     num_features = 128
-
 def inferenceResolution(tfrecord_dir):
     assert os.path.isdir(tfrecord_dir)
-    tfr_files = sorted(glob.glob(os.path.join(self.tfrecord_dir, '*.tfrecords')))
-        assert len(tfr_files) >= 1
-        tfr_shapes = []
-        for tfr_file in tfr_files:
-            tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
-            for record in tf.python_io.tf_record_iterator(tfr_file, tfr_opt):
-                tfr_shapes.append(parse_tfrecord_np(record).shape)
-                break
+    tfr_files = sorted(glob(os.path.join(tfrecord_dir, '*.tfrecords')))
+    assert len(tfr_files) >= 1
+    tfr_shapes = []
+    for tfr_file in tfr_files:
+        tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
+        for record in tf.python_io.tf_record_iterator(tfr_file, tfr_opt):
+            tfr_shapes.append(parse_tfrecord_np(record).shape)
+            break
     max_shape = max(tfr_shapes, key=lambda shape: np.prod(shape))
     resolution = max_shape[0]
     assert max_shape[-1] in [1, 3]
@@ -77,7 +62,6 @@ def inferenceResolution(tfrecord_dir):
         num_features = 256 
     else:
         num_features = 128
-
     return num_channels, resolution, num_features
 
 tfrecord_dir = os.path.join("datasets", FLAGS.dataset)
