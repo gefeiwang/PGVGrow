@@ -32,3 +32,11 @@ def process_real(x, lod_in):
     for i in range(int(np.floor(lod_in))):
         y = upscale(y)
     return y
+
+def parse_tfrecord_np(record):
+    ex = tf.train.Example()
+    ex.ParseFromString(record)
+    shape = ex.features.feature['shape'].int64_list.value
+    data = ex.features.feature['data'].bytes_list.value[0]
+    return np.fromstring(data, np.uint8).reshape(shape)
+
