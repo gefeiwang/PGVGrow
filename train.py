@@ -49,7 +49,7 @@ elif FLAGS.dataset == 'cifar10':
     num_channels = 3
     resolution = 32
     num_features = 256
-elif FLAGS.dataset == 'celeba':
+elif FLAGS.dataset in ['celeba', 'cartoon']:
     num_channels = 3
     resolution = 128
     num_features = 256
