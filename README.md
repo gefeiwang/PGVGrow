@@ -76,6 +76,35 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 </tr>
 </table>
 
+
+<table align='center'>
+<tr align='center'>
+<td> Resolution </td>
+<td> 4x4 </td>
+<td> 8x8 </td>
+<td> 16x16 </td>
+</tr>
+<tr align='center'>
+<td> Cartoon </td>
+<td><img src = 'examples/cartoon4.png' height = '196px'>
+<td><img src = 'examples/cartoon8.png' height = '196px'>
+<td><img src = 'examples/cartoon16.png' height = '196px'>
+</tr>
+<tr align='center'>
+<td> Resolution </td>
+<td> 32x32 </td>
+<td> 64x64 </td>
+<td> 128x128 </td>
+</tr>
+<tr align='center'>
+<td> Cartoon </td>
+<td><img src = 'examples/cartoon32.png' height = '196px'>
+<td><img src = 'examples/cartoon64.png' height = '196px'>
+<td><img src = '' height = '196px'>
+</tr>
+</table>
+
+
 <table align='center'>
 <tr align='center'>
 <td> Resolution </td>
