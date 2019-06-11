@@ -320,7 +320,7 @@ def create_portrait_tfr(data_dir, tfrecord_dir='portrait'):
 def create_cartoon_tfr(data_dir, tfrecord_dir='cartoon'):
     # "data_dir" should be a folder containing 202599 218*178 png files
 
-    resolution_log2 = int(np.log2(96))
+    resolution_log2 = int(np.log2(128))
 
     # reading raw images
     import PIL.Image
@@ -346,7 +346,7 @@ def create_cartoon_tfr(data_dir, tfrecord_dir='cartoon'):
     np.random.RandomState(123).shuffle(order)
 
     for idx in range(images_num):
-        img = np.asarray(PIL.Image.open(image_filenames[order[idx]]).resize((96,96)))
+        img = np.asarray(PIL.Image.open(image_filenames[order[idx]]).resize((128,128)))
         if idx < 10000:
             imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals', '%06d.png' % idx), img)
         for lod, tfr_writer in enumerate(tfr_writers):
