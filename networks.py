@@ -19,11 +19,10 @@ def pixel_norm(x, axis=3):
     return x / tf.sqrt(tf.reduce_mean(tf.square(x), axis=axis, keepdims=True) + 1e-6)
 
 def add_feature_stdd(x): # add standard deviation over mini-batch (one non-negetive scalar) as a new feature map
-    s = x.shape
     y = tf.reduce_mean(tf.square(x - tf.reduce_mean(x, axis=0, keepdims=True)), axis=0, keepdims=True)
     y = tf.sqrt(y + 1e-6)
     y = tf.reduce_mean(y, axis=[1,2,3], keepdims=True)
-    y = tf.tile(y, [tf.shape(x)[0], s[1], s[2], 1])
+    y = tf.tile(y, [tf.shape(x)[0], tf.shape(x)[1], tf.shape(x)[2], 1])
     return tf.concat([x, y], axis=3)
 
 def generator(latents_in, lod_in, num_channels, resolution, latent_size, num_features, is_smoothing=False, reuse=None):
