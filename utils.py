@@ -18,25 +18,22 @@ def montage(images, grid):
 ################################ pre-processing real images ################################
 
 def downscale(img):
-    s = img.shape
-    out = np.reshape(img, [-1, s[1]//2, 2, s[2]//2, 2, s[3]])
-    return np.mean(out, axis=(2, 4))
+    s = tf.shape(img)
+    y = tf.reshape(img, [-1, s[1]//2, 2, s[2]//2, 2, s[3]])
+    return tf.reduce_mean(y, axis=[2, 4])
 
-def upscale(img):
-    return np.repeat(np.repeat(img, 2, axis=1), 2, axis=2)
+def upscale(img, factor):
+    s = tf.shape(img)
+    y = tf.reshape(img, [-1, s[1], 1, s[2], 1, s[3]])
+    y = tf.tile(y, [1, 1, factor, 1, factor, 1])
+    return tf.reshape(y, [-1, s[1]*factor, s[2]*factor, s[3]])
 
 def process_real(x, lod_in):
-    y = x / 127.5 - 1
-    alpha = lod_in - np.floor(lod_in)
-    y = (1 - alpha)*y + alpha*upscale(downscale(y))
-    for i in range(int(np.floor(lod_in))):
-        y = upscale(y)
-    return y
-
-def parse_tfrecord_np(record):
-    ex = tf.train.Example()
-    ex.ParseFromString(record)
-    shape = ex.features.feature['shape'].int64_list.value
-    data = ex.features.feature['data'].bytes_list.value[0]
-    return np.fromstring(data, np.uint8).reshape(shape)
-
+    with tf.name_scope('process_real'):
+        x = tf.cast(x, tf.float32)
+        y = x / 127.5 - 1
+        alpha = lod_in - tf.floor(lod_in)
+        y = (1 - alpha)*y + alpha*upscale(downscale(y), factor=2)
+        factor = tf.cast(2 ** tf.floor(lod_in), tf.int32)
+        y = upscale(y, factor)
+        return y

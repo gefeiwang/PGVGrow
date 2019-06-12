@@ -8,6 +8,7 @@ from tqdm import tqdm
 from collections import OrderedDict
 
 import data_tool
+import dataset
 from networks import *
 from utils import *
 
@@ -51,7 +52,7 @@ def inferenceResolution(tfrecord_dir):
     for tfr_file in tfr_files:
         tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
         for record in tf.python_io.tf_record_iterator(tfr_file, tfr_opt):
-            tfr_shapes.append(parse_tfrecord_np(record).shape)
+            tfr_shapes.append(dataset.parse_tfrecord_np(record).shape)
             break
     max_shape = max(tfr_shapes, key=lambda shape: np.prod(shape))
     resolution = max_shape[0]
@@ -100,18 +101,23 @@ def coef_div(d_score, coef=1):
 
 ################################ building graph ################################
 
-x_p    = tf.placeholder(dtype=tf.float32, shape=[None, resolution, resolution, num_channels], name='images')
 z_p    = tf.placeholder(dtype=tf.float32, shape=[None, FLAGS.z_dim], name='batch_latents')
 Sz_p   = tf.placeholder(dtype=tf.float32, shape=[None, FLAGS.z_dim], name='pool_latents')
 G_z_p  = tf.placeholder(dtype=tf.float32, shape=[None, resolution, resolution, num_channels], name='batch_particles')
 G_Sz_p = tf.placeholder(dtype=tf.float32, shape=[None, resolution, resolution, num_channels], name='pool_particles')
 lod_in = tf.placeholder(dtype=tf.float32, shape=[], name='level_of_details')
+batch_size = tf.placeholder(dtype=tf.int32, shape=[], name='batch_size')
+
+training_data = dataset.Dataset(tfrecord_path=os.path.join('datasets', FLAGS.dataset))
+reals = training_data.get_minibatch()
+
+x = process_real(reals, lod_in)
 
 G_z  = generator(z_p, lod_in, num_channels, resolution, FLAGS.z_dim, num_features)
 Gs_z = generator(z_p, lod_in, num_channels, resolution, FLAGS.z_dim, num_features, is_smoothing = True)
 
 # discriminator loss:
-d_real_logits = discriminator(x_p, lod_in, num_channels, resolution, num_features)
+d_real_logits = discriminator(x, lod_in, num_channels, resolution, num_features)
 d_fake_logits = discriminator(G_z_p, lod_in, num_channels, resolution, num_features, reuse=True)
 loss_d_real = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=d_real_logits, labels=tf.ones_like(d_real_logits)))
 loss_d_fake = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=d_fake_logits, labels=tf.zeros_like(d_fake_logits)))
@@ -123,7 +129,7 @@ d_fake_grad = tf.gradients(d_fake_logits, G_z_p)[0]
 # if use gradient penalty:
 if FLAGS.use_gp:
     mix_factors = tf.placeholder(dtype=tf.float32, shape=[None, 1, 1, 1], name='mix_factors')
-    mix_images = x_p + mix_factors * (G_z_p - x_p)
+    mix_images = x + mix_factors * (G_z_p - x)
     d_mix_logits = discriminator(mix_images, lod_in, num_channels, resolution, num_features, reuse=True)
     d_mix_grad = tf.gradients(d_mix_logits, mix_images)[0]
     mix_grad_norm = tf.sqrt(tf.reduce_sum(tf.square(d_mix_grad), axis=[1,2,3]))
@@ -167,8 +173,6 @@ resolution_log2 = int(np.log2(resolution))
 
 with tf.Session() as sess:
 
-    iterators = [data_tool.data_iterator(dataset=FLAGS.dataset, lod_in=lod, batch_size=batchsize_dict[2**(resolution_log2-lod)], resolution_log2=resolution_log2) for lod in range(int(np.log2(resolution/FLAGS.init_resolution))+1)]
-
     if not FLAGS.resume_training:
         sess.run(tf.global_variables_initializer())
         num_img = 0
@@ -195,16 +199,14 @@ with tf.Session() as sess:
         Sz = np.random.randn(batch_size*FLAGS.pool_size, FLAGS.z_dim)
         P = sess.run(G_z, feed_dict={z_p: Sz, lod_in: cur_lod})
 
+        # update configuration
+        training_data.configure(lod_in=cur_lod, minibatch_size=batch_size)
+
         # inner loop:
         for t in range(FLAGS.T):
 
             # optimize discriminator:
             for u in range(FLAGS.U):
-
-                # get a batch of real images:
-                x = next(iterators[int(np.floor(cur_lod))])
-                x = process_real(x, cur_lod)
-                num_img += batch_size
 
                 # sample a batch of latents from the pool:
                 sample_index = np.random.choice(batch_size*FLAGS.pool_size, batch_size, replace=False)
@@ -212,9 +214,11 @@ with tf.Session() as sess:
                 # update
                 if FLAGS.use_gp:
                     mix_coef = np.random.uniform(0, 1, [batch_size, 1, 1, 1])
-                    sess.run([update_d, update_gs], feed_dict={x_p: x, G_z_p: P[sample_index], mix_factors: mix_coef, lod_in: cur_lod})
+                    sess.run([update_d, update_gs], feed_dict={G_z_p: P[sample_index], mix_factors: mix_coef, lod_in: cur_lod})
                 else:
-                    sess.run([update_d, update_gs], feed_dict={x_p: x, G_z_p: P[sample_index], lod_in: cur_lod})
+                    sess.run([update_d, update_gs], feed_dict={G_z_p: P[sample_index], lod_in: cur_lod})
+
+                num_img += batch_size
 
             # move particles
             d_score = sess.run(d_fake_logits, feed_dict={G_z_p: P, lod_in: cur_lod})
@@ -228,15 +232,16 @@ with tf.Session() as sess:
 
         cur_lod = lod(num_img)
 
-        # reset Adam optimizers states when increasing resolution:
+        # reset Adam optimizers states and update configuration when increasing resolution:
         if np.floor(cur_lod) != np.floor(prev_lod) or np.ceil(cur_lod) != np.ceil(prev_lod):
             sess.run([reset_optimizer_d, reset_optimizer_g])
+            training_data.configure(lod_in=cur_lod, minibatch_size=batch_size)
 
         if (num_img // 1000) >= tick_kimg + 150:
             count += 1
 
             tick_kimg = (num_img // 1000)
-            real_loss, fake_loss = sess.run([loss_d_real, loss_d_fake], feed_dict={x_p: x, G_z_p: P[sample_index], lod_in: cur_lod})
+            real_loss, fake_loss = sess.run([loss_d_real, loss_d_fake], feed_dict={G_z_p: P[sample_index], lod_in: cur_lod})
             G_loss               = sess.run(loss_g, feed_dict={z_p: Sz, G_Sz_p: P, lod_in: cur_lod})
             
             print('num_img: %d ' % num_img, '  |  lod_in: %.2f' % cur_lod, '\n',
