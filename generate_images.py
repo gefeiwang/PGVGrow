@@ -75,7 +75,7 @@ lod_in = tf.placeholder(dtype=tf.float32, shape=[], name='level_of_details')
 
 Gs_z = generator(z_p, lod_in, num_channels, resolution, FLAGS.z_dim, num_features, is_smoothing = True)
 
-################################ training ################################
+################################ generating ################################
 
 saver = tf.train.Saver()
 
