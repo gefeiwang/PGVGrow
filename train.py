@@ -51,7 +51,7 @@ def inferenceResolution(tfrecord_dir):
     for tfr_file in tfr_files:
         tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
         for record in tf.python_io.tf_record_iterator(tfr_file, tfr_opt):
-            tfr_shapes.append(parse_tfrecord_np(record).shape)
+            tfr_shapes.append(data_tool.parse_tfrecord_np(record).shape)
             break
     max_shape = max(tfr_shapes, key=lambda shape: np.prod(shape))
     resolution = max_shape[0]
