@@ -22,8 +22,6 @@ def calculate_fid(data_dir1, data_dir2, batch_size, sess):
 
     # building graph
     raw_images = tf.placeholder(tf.float32, [None, None, None, 3], name='raw_images')
-    activations1 = tf.placeholder(tf.float32, [None, None], name='activations1')
-    activations2 = tf.placeholder(tf.float32, [None, None], name='activations2')
     resized_images = tf.image.resize_bilinear(raw_images, [299, 299])
     activations = tf.contrib.gan.eval.run_inception(resized_images, output_tensor = 'pool_3:0')
 
