@@ -13,6 +13,7 @@ tf.app.flags.DEFINE_string('gpu', '0', 'GPU(s) to use')
 tf.app.flags.DEFINE_string('dataset', 'mnist', 'Dataset to use')
 tf.app.flags.DEFINE_string('divergence', 'KL', 'Divergence')
 tf.app.flags.DEFINE_string('path', './results', 'Output path')
+tf.app.flags.DEFINE_string('dir_name', 'fakes', 'Folder to save generated images')
 tf.app.flags.DEFINE_integer('seed', 1234, 'Random Seed')
 tf.app.flags.DEFINE_integer('init_resolution', 4, 'Initial resolution of images')
 tf.app.flags.DEFINE_integer('z_dim', 512, 'Size of latent vectors')
@@ -21,7 +22,7 @@ tf.app.flags.DEFINE_integer('total_nimg', 12000000, 'Total number of images used
 
 tf.app.flags.DEFINE_integer('load_num', 0, 'Generate fake images using networks trained with given number of real images')
 
-tf.app.flags.DEFINE_integer('generate_num', 0, 'The number of images you want to generate')
+tf.app.flags.DEFINE_integer('generate_num', 10000, 'The number of images you want to generate')
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -87,9 +88,9 @@ with tf.Session() as sess:
     cur_lod = lod(num_img)
     z_fixed = np.random.randn(FLAGS.generate_num, FLAGS.z_dim)
 
-    os.mkdir(os.path.join(out_path, 'fakes%06d-generated' % (num_img // 1000)))
+    os.mkdir(os.path.join(out_path, FLAGS.dir_name))
 
     for i in tqdm(range(FLAGS.generate_num)):
         img = sess.run(Gs_z, feed_dict={z_p: np.expand_dims(z_fixed[i], axis=0), lod_in: cur_lod})
         img = (img + 1) / 2
-        imageio.imsave(os.path.join(out_path, 'fakes%06d-generated' % (num_img // 1000), '%05d.png' % i), np.rint(img[0]*255).clip(0, 255).astype(np.uint8))
+        imageio.imsave(os.path.join(out_path, FLAGS.dir_name, '%05d.png' % i), np.rint(img[0]*255).clip(0, 255).astype(np.uint8))
