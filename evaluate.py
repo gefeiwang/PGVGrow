@@ -99,9 +99,9 @@ def calculate_is(data_dir, batch_size, sess):
         image_batch = images[i*batch_size : (i+1)*batch_size] / 127.5 - 1
         logit[i*batch_size : (i+1)*batch_size] = sess.run(logits, feed_dict={raw_images: image_batch})[:, :1000]
     pred = np.exp(logit) / np.sum(np.exp(logit), 1, keepdims=True)
-    fid = calculate_is_with_pred(pred)
+    mean, std = calculate_is_with_pred(pred)
 
-    return fid
+    return mean, std
 
 if __name__ == "__main__":
 
