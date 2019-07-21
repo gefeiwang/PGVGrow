@@ -196,7 +196,7 @@ def create_celeba_tfr(data_dir, tfrecord_dir='celeba'):
     np.random.RandomState(123).shuffle(order)
 
     for idx in range(images_num):
-        img = np.asarray(PIL.Image.open(image_filenames[order[idx]]), dtype='int64')
+        img = np.asarray(PIL.Image.open(image_filenames[order[idx]]))
         img = img[57:185, 25:153]
         if idx < 10000:
             imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-1', '%06d.png' % idx), img)
