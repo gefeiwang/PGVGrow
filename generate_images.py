@@ -24,6 +24,8 @@ tf.app.flags.DEFINE_integer('load_num', 0, 'Generate fake images using networks 
 
 tf.app.flags.DEFINE_integer('generate_num', 10000, 'The number of images you want to generate')
 
+tf.app.flags.DEFINE_bool('interpolation', False, 'Generate interpolation results?')
+
 FLAGS = tf.app.flags.FLAGS
 
 os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu
@@ -86,7 +88,11 @@ with tf.Session() as sess:
     num_img = FLAGS.load_num
         
     cur_lod = lod(num_img)
-    z_fixed = np.random.randn(FLAGS.generate_num, FLAGS.z_dim)
+    if FLAGS.interpolation:
+        pair = np.random.randn(2, FLAGS.z_dim)
+        z_fixed = np.linspace(pair[0], pair[1], FLAGS.generate_num)
+    else:
+        z_fixed = np.random.randn(FLAGS.generate_num, FLAGS.z_dim)
 
     os.mkdir(os.path.join(out_path, FLAGS.dir_name))
 
