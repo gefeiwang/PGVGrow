@@ -26,6 +26,34 @@ def add_feature_stdd(x): # add standard deviation over mini-batch (one non-neget
     y = tf.tile(y, [tf.shape(x)[0], s[1], s[2], 1])
     return tf.concat([x, y], axis=3)
 
+def attention_conv(x):
+    with tf.variable_scope('Attention'):
+        num_features = int(x.shape[-1])
+        batch_size = tf.shape(x)[0]
+        w_f = tf.get_variable('Kernel_f', dtype=tf.float32, shape=[1, 1, num_features, num_features//8], initializer=tf.initializers.zeros())
+        b_f = tf.get_variable('Bias_f', dtype=tf.float32, shape=[num_features//8], initializer=tf.initializers.zeros())
+        f = tf.nn.conv2d(x, w_f, strides=[1, 1, 1, 1], padding='SAME') + b_f
+        f_flatten = tf.reshape(f, shape=[batch_size, -1, f.shape[-1]])
+
+        w_g = tf.get_variable('Kernel_g', dtype=tf.float32, shape=[1, 1, num_features, num_features//8], initializer=tf.initializers.zeros())
+        b_g = tf.get_variable('Bias_g', dtype=tf.float32, shape=[num_features//8], initializer=tf.initializers.zeros())
+        g = tf.nn.conv2d(x, w_g, strides=[1, 1, 1, 1], padding='SAME') + b_g
+        g_flatten = tf.reshape(g, shape=[batch_size, -1, g.shape[-1]])
+
+        w_h = tf.get_variable('Kernel_h', dtype=tf.float32, shape=[1, 1, num_features, num_features], initializer=tf.initializers.zeros())
+        std_h = tf.constant(np.sqrt(2/(3*3*num_features)), dtype=tf.float32, name='std_h')
+        b_h = tf.get_variable('Bias_h', dtype=tf.float32, shape=[num_features], initializer=tf.initializers.zeros())
+        h = tf.nn.conv2d(x, w_h*std_h, strides=[1, 1, 1, 1], padding='SAME') + b_h
+        h_flatten = tf.reshape(h, shape=[batch_size, -1, h.shape[-1]])
+
+        s = tf.matmul(g_flatten, f_flatten, transpose_b=True)
+        beta = tf.nn.softmax(s)  # attention map
+        o = tf.reshape(tf.matmul(beta, h_flatten), shape=tf.shape(x))
+        gamma = tf.get_variable("Gamma", [1], initializer=tf.initializers.zeros())
+        x = gamma * o + x
+
+        return x
+
 def generator(latents_in, lod_in, num_channels, resolution, latent_size, num_features, is_smoothing=False, reuse=None):
 
     def G_block(x, res):
@@ -39,6 +67,19 @@ def generator(latents_in, lod_in, num_channels, resolution, latent_size, num_fea
                     b = tf.get_variable('Bias', dtype=tf.float32, shape=[num_features], initializer=tf.initializers.zeros())
                     x = pixel_norm(tf.nn.leaky_relu(x + b, alpha=0.2), axis=1)
                 with tf.variable_scope('Conv'):
+                    w = tf.get_variable('Kernel', dtype=tf.float32, shape=[3, 3, num_features, num_features], initializer=tf.initializers.random_normal())
+                    std = tf.constant(np.sqrt(2/(3*3*num_features)), dtype=tf.float32, name='std')
+                    b = tf.get_variable('Bias', dtype=tf.float32, shape=[num_features], initializer=tf.initializers.zeros())
+                    x = pixel_norm(tf.nn.leaky_relu(tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b, alpha=0.2))
+            elif res == 5:
+                x = upscale2d(x)
+                with tf.variable_scope('Conv1'):
+                    w = tf.get_variable('Kernel', dtype=tf.float32, shape=[3, 3, num_features, num_features], initializer=tf.initializers.random_normal())
+                    std = tf.constant(np.sqrt(2/(3*3*num_features)), dtype=tf.float32, name='std')
+                    b = tf.get_variable('Bias', dtype=tf.float32, shape=[num_features], initializer=tf.initializers.zeros())
+                    x = pixel_norm(tf.nn.leaky_relu(tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b, alpha=0.2))
+                x = attention_conv(x)
+                with tf.variable_scope('Conv2'):
                     w = tf.get_variable('Kernel', dtype=tf.float32, shape=[3, 3, num_features, num_features], initializer=tf.initializers.random_normal())
                     std = tf.constant(np.sqrt(2/(3*3*num_features)), dtype=tf.float32, name='std')
                     b = tf.get_variable('Bias', dtype=tf.float32, shape=[num_features], initializer=tf.initializers.zeros())
@@ -57,17 +98,18 @@ def generator(latents_in, lod_in, num_channels, resolution, latent_size, num_fea
                     x = pixel_norm(tf.nn.leaky_relu(tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b, alpha=0.2))
             return x
 
-    def F2I(x, res): # Feature maps to Image
-        with tf.variable_scope('F2I_%dx%d' % (2**res, 2**res), reuse=tf.AUTO_REUSE):
+    def FtoI(x, res): # Feature maps to Image
+        with tf.variable_scope('FtoI_%dx%d' % (2**res, 2**res), reuse=tf.AUTO_REUSE):
             w = tf.get_variable('Kernel', dtype=tf.float32, shape=[1, 1, num_features, num_channels], initializer=tf.initializers.random_normal())
             std = tf.constant(np.sqrt(1/num_features), dtype=tf.float32, name='std')
             b = tf.get_variable('Bias', dtype=tf.float32, shape=[num_channels], initializer=tf.initializers.zeros())
-            return tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b
+            x = tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b
+            return x
 
     def grow(x, res, lod):
         y = G_block(x, res)
-        img = lambda: upscale2d(F2I(y, res), 2**lod)
-        if res > 2: img = cset(img, (lod_in > lod), lambda: upscale2d(lerp(F2I(y, res), upscale2d(F2I(x, res - 1)), lod_in - lod), 2**lod))
+        img = lambda: upscale2d(FtoI(y, res), 2**lod)
+        if res > 2: img = cset(img, (lod_in > lod), lambda: upscale2d(lerp(FtoI(y, res), upscale2d(FtoI(x, res - 1)), lod_in - lod), 2**lod))
         if lod > 0: img = cset(img, (lod_in < lod), lambda: grow(y, res + 1, lod - 1))
         return img()
 
@@ -81,7 +123,20 @@ def discriminator(images_in, lod_in, num_channels, resolution, num_features, reu
 
     def D_block(x, res):
         with tf.variable_scope('%dx%d' % (2**res, 2**res), reuse=tf.AUTO_REUSE):
-            if res >= 3:
+            if res == 5:
+                with tf.variable_scope('Conv1'):
+                    w = tf.get_variable('Kernel', dtype=tf.float32, shape=[3, 3, num_features, num_features], initializer=tf.initializers.random_normal())
+                    std = tf.constant(np.sqrt(2/(3*3*num_features)), dtype=tf.float32, name='std')
+                    b = tf.get_variable('Bias', dtype=tf.float32, shape=[num_features], initializer=tf.initializers.zeros())
+                    x = tf.nn.leaky_relu(tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b, alpha=0.2)
+                x = attention_conv(x)
+                with tf.variable_scope('Conv2'):
+                    w = tf.get_variable('Kernel', dtype=tf.float32, shape=[3, 3, num_features, num_features], initializer=tf.initializers.random_normal())
+                    std = tf.constant(np.sqrt(2/(3*3*num_features)), dtype=tf.float32, name='std')
+                    b = tf.get_variable('Bias', dtype=tf.float32, shape=[num_features], initializer=tf.initializers.zeros())
+                    x = tf.nn.leaky_relu(tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b, alpha=0.2)
+                x = downscale2d(x)
+            elif res >= 3:
                 with tf.variable_scope('Conv1'):
                     w = tf.get_variable('Kernel', dtype=tf.float32, shape=[3, 3, num_features, num_features], initializer=tf.initializers.random_normal())
                     std = tf.constant(np.sqrt(2/(3*3*num_features)), dtype=tf.float32, name='std')
@@ -113,18 +168,19 @@ def discriminator(images_in, lod_in, num_channels, resolution, num_features, reu
                     x = tf.nn.xw_plus_b(x, w*std, b)
             return x
 
-    def I2F(x, res): # Image to Feature maps
-        with tf.variable_scope('I2F_%dx%d' % (2**res, 2**res), reuse=tf.AUTO_REUSE):
+    def ItoF(x, res): # Image to Feature maps
+        with tf.variable_scope('ItoF_%dx%d' % (2**res, 2**res), reuse=tf.AUTO_REUSE):
             w = tf.get_variable('Kernel', dtype=tf.float32, shape=[1, 1, num_channels, num_features], initializer=tf.initializers.random_normal())
             std = tf.constant(np.sqrt(2/num_channels), dtype=tf.float32, name='std')
             b = tf.get_variable('Bias', dtype=tf.float32, shape=[num_features], initializer=tf.initializers.zeros())
-            return tf.nn.leaky_relu(tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b, alpha=0.2)
+            x = tf.nn.leaky_relu(tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b, alpha=0.2)
+            return x
 
     def grow(res, lod):
-        x = lambda: I2F(downscale2d(images_in, 2**lod), res)
+        x = lambda: ItoF(downscale2d(images_in, 2**lod), res)
         if lod > 0: x = cset(x, (lod_in < lod), lambda: grow(res + 1, lod - 1))
         x = D_block(x(), res); y = lambda: x
-        if res > 2: y = cset(y, (lod_in > lod), lambda: lerp(x, I2F(downscale2d(images_in, 2**(lod+1)), res - 1), lod_in - lod))
+        if res > 2: y = cset(y, (lod_in > lod), lambda: lerp(x, ItoF(downscale2d(images_in, 2**(lod+1)), res - 1), lod_in - lod))
         return y()
 
     with tf.variable_scope('discriminator', reuse=reuse):
