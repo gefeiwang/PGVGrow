@@ -71,7 +71,7 @@ def generator(latents_in, lod_in, num_channels, resolution, latent_size, num_fea
                     std = tf.constant(np.sqrt(2/(3*3*num_features)), dtype=tf.float32, name='std')
                     b = tf.get_variable('Bias', dtype=tf.float32, shape=[num_features], initializer=tf.initializers.zeros())
                     x = pixel_norm(tf.nn.leaky_relu(tf.nn.conv2d(x, w*std, strides=[1, 1, 1, 1], padding='SAME') + b, alpha=0.2))
-            elif res == 5:
+            elif (resolution >= 64) and (res == 5):
                 x = upscale2d(x)
                 with tf.variable_scope('Conv1'):
                     w = tf.get_variable('Kernel', dtype=tf.float32, shape=[3, 3, num_features, num_features], initializer=tf.initializers.random_normal())
@@ -123,7 +123,7 @@ def discriminator(images_in, lod_in, num_channels, resolution, num_features, reu
 
     def D_block(x, res):
         with tf.variable_scope('%dx%d' % (2**res, 2**res), reuse=tf.AUTO_REUSE):
-            if res == 5:
+            if (resolution >= 64) and (res == 5):
                 with tf.variable_scope('Conv1'):
                     w = tf.get_variable('Kernel', dtype=tf.float32, shape=[3, 3, num_features, num_features], initializer=tf.initializers.random_normal())
                     std = tf.constant(np.sqrt(2/(3*3*num_features)), dtype=tf.float32, name='std')

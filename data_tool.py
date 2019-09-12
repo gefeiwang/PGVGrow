@@ -32,12 +32,10 @@ def create_mnist_tfr(data_dir, tfrecord_dir='mnist'):
     os.mkdir(os.path.join('datasets', tfrecord_dir))
 
     # saving images for measurement
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-1'))
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-2'))
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals'))
 
     for i in range(10000):
-        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-1', '%06d.png' % i), images[i])
-        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-2', '%06d.png' % i), images[i+10000])
+        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals', '%06d.png' % i), images[i])
 
     # creating tfrecords
     tfr_writers = []
@@ -83,12 +81,10 @@ def create_fashionmnist_tfr(data_dir, tfrecord_dir='fashionmnist'):
     os.mkdir(os.path.join('datasets', tfrecord_dir))
 
     # saving images for measurement
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-1'))
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-2'))
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals'))
 
     for i in range(10000):
-        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-1', '%06d.png' % i), images[i])
-        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-2', '%06d.png' % i), images[i+10000])
+        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals', '%06d.png' % i), images[i])
 
     # creating tfrecords
     tfr_writers = []
@@ -135,12 +131,10 @@ def create_cifar10_tfr(data_dir, tfrecord_dir='cifar10'):
     os.mkdir(os.path.join('datasets', tfrecord_dir))
 
     # saving images for measurement
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-1'))
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-2'))
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals'))
 
     for i in range(10000):
-        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-1', '%06d.png' % i), images[i])
-        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-2', '%06d.png' % i), images[i+10000])
+        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals', '%06d.png' % i), images[i])
 
     # creating tfrecords
     tfr_writers = []
@@ -175,14 +169,21 @@ def create_celeba_tfr(data_dir, tfrecord_dir='celeba'):
     import PIL.Image
     glob_pattern = os.path.join(data_dir, '*.png')
     image_filenames = sorted(glob.glob(glob_pattern))
+    images_num = len(image_filenames)
 
     # creating tfrecords
     if not os.path.exists('datasets'):
         os.mkdir('datasets')
     assert os.path.exists(os.path.join('datasets', tfrecord_dir))==False
     os.mkdir(os.path.join('datasets', tfrecord_dir))
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-1'))
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-2'))
+
+    # saving images for measurement
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals'))
+
+    for idx in range(10000):
+        img = np.asarray(PIL.Image.open(image_filenames[idx]))
+        img = img[57:185, 25:153]
+        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals', '%06d.png' % idx), img)
 
     tfr_writers = []
     tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
@@ -191,17 +192,63 @@ def create_celeba_tfr(data_dir, tfrecord_dir='celeba'):
         tfr_file = os.path.join('datasets', tfrecord_dir) + '/celeba%02d.tfrecords' % (resolution_log2 - lod)
         tfr_writers.append(tf.python_io.TFRecordWriter(tfr_file, tfr_opt))
 
-    images_num = len(image_filenames)
     order = np.arange(images_num)
     np.random.RandomState(123).shuffle(order)
 
     for idx in range(images_num):
         img = np.asarray(PIL.Image.open(image_filenames[order[idx]]))
         img = img[57:185, 25:153]
-        if idx < 10000:
-            imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-1', '%06d.png' % idx), img)
-        if 10000 <= idx < 20000:
-            imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-2', '%06d.png' % idx), img)
+        for lod, tfr_writer in enumerate(tfr_writers):
+            if lod:
+                img = img.astype(np.float32)
+                img = (img[0::2, 0::2] + img[0::2, 1::2] + img[1::2, 0::2] + img[1::2, 1::2]) * 0.25
+            quant = np.rint(img).clip(0, 255).astype(np.uint8)
+            example = tf.train.Example(features=tf.train.Features(feature={
+                'shape': tf.train.Feature(int64_list=tf.train.Int64List(value=quant.shape)),
+                'data': tf.train.Feature(bytes_list=tf.train.BytesList(value=[quant.tostring()]))}))
+            tfr_writer.write(example.SerializeToString())
+
+def create_celeba64_tfr(data_dir, tfrecord_dir='celeba64'):
+    # "data_dir" should be a folder containing 202599 218*178 png files
+
+    resolution_log2 = int(np.log2(64))
+
+    # reading raw images
+    import PIL.Image
+    glob_pattern = os.path.join(data_dir, '*.png')
+    image_filenames = sorted(glob.glob(glob_pattern))
+    images_num = len(image_filenames)
+
+    # creating tfrecords
+    if not os.path.exists('datasets'):
+        os.mkdir('datasets')
+    assert os.path.exists(os.path.join('datasets', tfrecord_dir))==False
+    os.mkdir(os.path.join('datasets', tfrecord_dir))
+
+    # saving images for measurement
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals'))
+
+    for idx in range(10000):
+        img = np.asarray(PIL.Image.open(image_filenames[idx]), dtype='int64')
+        img = img[57:185, 25:153]
+        img = (img[0::2, 0::2] + img[0::2, 1::2] + img[1::2, 0::2] + img[1::2, 1::2]) * 0.25
+        quant = np.rint(img).clip(0, 255).astype(np.uint8)
+        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals', '%06d.png' % idx), quant)
+
+    tfr_writers = []
+    tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
+
+    for lod in range(resolution_log2 - 1):
+        tfr_file = os.path.join('datasets', tfrecord_dir) + '/celeba64%02d.tfrecords' % (resolution_log2 - lod)
+        tfr_writers.append(tf.python_io.TFRecordWriter(tfr_file, tfr_opt))
+
+    order = np.arange(images_num)
+    np.random.RandomState(123).shuffle(order)
+
+    for idx in range(images_num):
+        img = np.asarray(PIL.Image.open(image_filenames[order[idx]]), dtype='int64')
+        img = img[57:185, 25:153]
+        img = (img[0::2, 0::2] + img[0::2, 1::2] + img[1::2, 0::2] + img[1::2, 1::2]) * 0.25
         for lod, tfr_writer in enumerate(tfr_writers):
             if lod:
                 img = img.astype(np.float32)
@@ -229,8 +276,8 @@ def create_lsun_tfr(data_dir, tfrecord_dir='lsun'):
         os.mkdir('datasets')
     assert os.path.exists(os.path.join('datasets', tfrecord_dir))==False
     os.mkdir(os.path.join('datasets', tfrecord_dir))
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-1'))
-    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals-2'))
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals_all'))
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals'))
 
     tfr_writers = []
     tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
@@ -240,7 +287,9 @@ def create_lsun_tfr(data_dir, tfrecord_dir='lsun'):
         tfr_writers.append(tf.python_io.TFRecordWriter(tfr_file, tfr_opt))
 
     with lmdb.open(data_dir, readonly=True).begin(write=False) as txn:
+
         count = 0
+
         for idx, (key, value) in enumerate(txn.cursor()):
             try:
                 try:
@@ -255,12 +304,8 @@ def create_lsun_tfr(data_dir, tfrecord_dir='lsun'):
                 img = PIL.Image.fromarray(img, 'RGB')
                 img = img.resize((256, 256), PIL.Image.ANTIALIAS)
                 img = np.asarray(img)
-                if count < 10000:
-                    imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-1', '%06d.png' % count), img)
-                    count += 1
-                if 10000 <= count < 20000:
-                    imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals-2', '%06d.png' % count), img)
-                    count += 1
+                imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals_all', '%06d.png' % count), img)
+                count += 1
                 for lod, tfr_writer in enumerate(tfr_writers):
                     if lod:
                         img = img.astype(np.float32)
@@ -273,6 +318,84 @@ def create_lsun_tfr(data_dir, tfrecord_dir='lsun'):
             except:
                 print(sys.exc_info()[1])
 
+    glob_pattern = os.path.join('datasets', tfrecord_dir, 'reals_all', '*.png')
+    image_filenames = sorted(glob.glob(glob_pattern))
+    images_num = len(image_filenames)
+    order = np.arange(images_num)
+    np.random.RandomState(123).shuffle(order)
+
+    for idx in range(10000):
+        img = np.asarray(PIL.Image.open(image_filenames[order[idx]]))
+        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals', '%06d.png' % idx), img)
+
+def create_lsun64_tfr(data_dir, tfrecord_dir='lsun64'):
+    # "data_dir" should be a folder containing mdb files
+
+    resolution_log2 = int(np.log2(64))
+
+    # reading raw images
+    import lmdb
+    import cv2
+    import io
+    import sys
+    import PIL.Image
+
+    # creating tfrecords
+    if not os.path.exists('datasets'):
+        os.mkdir('datasets')
+    assert os.path.exists(os.path.join('datasets', tfrecord_dir))==False
+    os.mkdir(os.path.join('datasets', tfrecord_dir))
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals_all'))
+    os.mkdir(os.path.join('datasets', tfrecord_dir, 'reals'))
+
+    tfr_writers = []
+    tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
+
+    for lod in range(resolution_log2 - 1):
+        tfr_file = os.path.join('datasets', tfrecord_dir) + '/lsun64%02d.tfrecords' % (resolution_log2 - lod)
+        tfr_writers.append(tf.python_io.TFRecordWriter(tfr_file, tfr_opt))
+
+    with lmdb.open(data_dir, readonly=True).begin(write=False) as txn:
+
+        count = 0
+
+        for idx, (key, value) in enumerate(txn.cursor()):
+            try:
+                try:
+                    img = cv2.imdecode(np.fromstring(value, dtype=np.uint8), 1)
+                    if img is None:
+                        raise IOError('cv2.imdecode failed')
+                    img = img[:, :, ::-1] # BGR => RGB
+                except IOError:
+                    img = np.asarray(PIL.Image.open(io.BytesIO(value)))
+                crop = np.min(img.shape[:2])
+                img = img[(img.shape[0] - crop) // 2 : (img.shape[0] + crop) // 2, (img.shape[1] - crop) // 2 : (img.shape[1] + crop) // 2]
+                img = PIL.Image.fromarray(img, 'RGB')
+                img = img.resize((64, 64), PIL.Image.ANTIALIAS)
+                img = np.asarray(img)
+                imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals_all', '%06d.png' % count), img)
+                count += 1
+                for lod, tfr_writer in enumerate(tfr_writers):
+                    if lod:
+                        img = img.astype(np.float32)
+                        img = (img[0::2, 0::2] + img[0::2, 1::2] + img[1::2, 0::2] + img[1::2, 1::2]) * 0.25
+                    quant = np.rint(img).clip(0, 255).astype(np.uint8)
+                    example = tf.train.Example(features=tf.train.Features(feature={
+                        'shape': tf.train.Feature(int64_list=tf.train.Int64List(value=quant.shape)),
+                        'data': tf.train.Feature(bytes_list=tf.train.BytesList(value=[quant.tostring()]))}))
+                    tfr_writer.write(example.SerializeToString())
+            except:
+                print(sys.exc_info()[1])
+
+    glob_pattern = os.path.join('datasets', tfrecord_dir, 'reals_all', '*.png')
+    image_filenames = sorted(glob.glob(glob_pattern))
+    images_num = len(image_filenames)
+    order = np.arange(images_num)
+    np.random.RandomState(123).shuffle(order)
+
+    for idx in range(10000):
+        img = np.asarray(PIL.Image.open(image_filenames[order[idx]]))
+        imageio.imsave(os.path.join('datasets', tfrecord_dir, 'reals', '%06d.png' % idx), img)
 
 def create_portrait_tfr(data_dir, tfrecord_dir='portrait'):
     # "data_dir" should be a folder containing jpg files
@@ -283,6 +406,7 @@ def create_portrait_tfr(data_dir, tfrecord_dir='portrait'):
     import PIL.Image
     glob_pattern = os.path.join(data_dir, '*.jpg')
     image_filenames = sorted(glob.glob(glob_pattern))
+    images_num = len(image_filenames)
 
     # creating tfrecords
     if not os.path.exists('datasets'):
@@ -298,7 +422,6 @@ def create_portrait_tfr(data_dir, tfrecord_dir='portrait'):
         tfr_file = os.path.join('datasets', tfrecord_dir) + '/portrait%02d.tfrecords' % (resolution_log2 - lod)
         tfr_writers.append(tf.python_io.TFRecordWriter(tfr_file, tfr_opt))
 
-    images_num = len(image_filenames)
     order = np.arange(images_num)
     np.random.RandomState(123).shuffle(order)
 
