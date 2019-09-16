@@ -14,11 +14,10 @@ tf.app.flags.DEFINE_string('dataset', 'mnist', 'Dataset to use')
 tf.app.flags.DEFINE_string('divergence', 'KL', 'Divergence')
 tf.app.flags.DEFINE_string('path', './results', 'Output path')
 tf.app.flags.DEFINE_string('dir_name', 'fakes', 'Folder to save generated images')
-tf.app.flags.DEFINE_integer('seed', 1234, 'Random Seed')
+tf.app.flags.DEFINE_integer('seed', 123, 'Random Seed')
 tf.app.flags.DEFINE_integer('init_resolution', 4, 'Initial resolution of images')
 tf.app.flags.DEFINE_integer('z_dim', 512, 'Size of latent vectors')
 tf.app.flags.DEFINE_integer('dur_nimg', 600000, 'Number of images used for a phase')
-tf.app.flags.DEFINE_integer('total_nimg', 12000000, 'Total number of images used for training')
 
 tf.app.flags.DEFINE_integer('load_num', 0, 'Generate fake images using networks trained with given number of real images')
 
