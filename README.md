@@ -17,11 +17,11 @@ We train PGVGrow model based on different f-divergence such as KL-divergence, JS
 
 <table align='center'>
 <tr align='center'>
-<td> </td>
-<td> Resolution 4x4 </td>
-<td> Resolution 8x8 </td>
-<td> Resolution 16x16 </td>
-<td> Resolution 32x32 </td>
+<td> Resolution </td>
+<td> 4x4 </td>
+<td> 8x8 </td>
+<td> 16x16 </td>
+<td> 32x32 </td>
 </tr>
 <tr align='center'>
 <td> MNIST </td>
