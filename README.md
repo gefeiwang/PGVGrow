@@ -56,9 +56,9 @@ We train PGVGrow model based on different f-divergence such as KL-divergence, JS
 </tr>
 <tr align='center'>
 <td> CelebA </td>
-<td><img src = 'examples/celeba4.png' height = '196px'>
-<td><img src = 'examples/celeba8.png' height = '196px'>
-<td><img src = 'examples/celeba16.png' height = '196px'>
+<td><img src = 'examples/celeba4.png' height = '224px'>
+<td><img src = 'examples/celeba8.png' height = '224px'>
+<td><img src = 'examples/celeba16.png' height = '224px'>
 </tr>
 <tr align='center'>
 <td> Resolution </td>
@@ -68,9 +68,9 @@ We train PGVGrow model based on different f-divergence such as KL-divergence, JS
 </tr>
 <tr align='center'>
 <td> CelebA </td>
-<td><img src = 'examples/celeba32.png' height = '196px'>
-<td><img src = 'examples/celeba64.png' height = '196px'>
-<td><img src = 'examples/celeba128.png' height = '196px'>
+<td><img src = 'examples/celeba32.png' height = '224px'>
+<td><img src = 'examples/celeba64.png' height = '224px'>
+<td><img src = 'examples/celeba128.png' height = '224px'>
 </tr>
 </table>
 
@@ -110,7 +110,7 @@ We train PGVGrow model based on different f-divergence such as KL-divergence, JS
 <td> 8x8 </td>
 </tr>
 <tr align='center'>
-<td> LSUN (Church) </td>
+<td> LSUN-Church (256x256) </td>
 <td><img src = 'examples/church4.png' height = '384px'>
 <td><img src = 'examples/church8.png' height = '384px'>
 </tr>
@@ -120,7 +120,7 @@ We train PGVGrow model based on different f-divergence such as KL-divergence, JS
 <td> 32x32 </td>
 </tr>
 <tr align='center'>
-<td> LSUN (Church) </td>
+<td> LSUN-Church (256x256) </td>
 <td><img src = 'examples/church16.png' height = '384px'>
 <td><img src = 'examples/church32.png' height = '384px'>
 </tr>
@@ -130,7 +130,7 @@ We train PGVGrow model based on different f-divergence such as KL-divergence, JS
 <td> 128x128 </td>
 </tr>
 <tr align='center'>
-<td> LSUN (Church) </td>
+<td> LSUN-Church (256x256) </td>
 <td><img src = 'examples/church64.png' height = '384px'>
 <td><img src = 'examples/church128.png' height = '384px'>
 </tr>
@@ -214,7 +214,14 @@ We show all dataset final resolution results from each f-divergence.
 <td> FID: 7.89 </td>
 </tr> -->
 <tr align='center'>
-<td> LSUN(Church) </td>
+<td> LSUN-Bedroom (256x256) </td>
+<td><img src = 'examples/bedroom-KL.png' height = '160px'>
+<td><img src = 'examples/bedroom-JS.png' height = '160px'>
+<td><img src = 'examples/bedroom-Jef.png' height = '160px'>
+<td><img src = 'examples/bedroom-LogD.png' height = '160px'>
+</tr>
+<tr align='center'>
+<td> LSUN-Church (256x256) </td>
 <td><img src = 'examples/church-KL.png' height = '160px'>
 <td><img src = 'examples/church-JS.png' height = '160px'>
 <td><img src = 'examples/church-Jef.png' height = '160px'>
