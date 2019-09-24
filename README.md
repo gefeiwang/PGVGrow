@@ -227,12 +227,19 @@ We show all dataset final resolution results from each f-divergence.
 <td> FID: 16.01 </td>
 <td> FID: 13.09 </td>
 </tr> -->
+<tr align='center'>
+<td> Portrait </td>
+<td><img src = 'examples/portrait-KL.png' height = '160px'>
+<td><img src = 'examples/portrait-JS.png' height = '160px'>
+<td><img src = 'examples/portrait-Jef.png' height = '160px'>
+<td><img src = 'examples/portrait-LogD.png' height = '160px'>
+</tr>
 </table>
 
 ### High resolution generation
 Here we show the high resolution generation results (256x256) based on LSUN (Church) dataset.
 
-![alt text](https://github.com/gefeiwang/PGVGrow/blob/master/examples/churchhigh.jpg)<br>
+![alt text](https://github.com/gefeiwang/PGVGrow/blob/master/examples/churchhigh.png)<br>
 
 
 ## Usage 
