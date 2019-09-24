@@ -13,9 +13,7 @@ A tensorflow implementation of VGrow by using progressive growing method descrip
   * NVIDIA driver 410.93 , CUDA V10.0.130, RTX 2080 Ti
   
 ## Results
-We train PGVGrow model based on different f-divergence such as KL-divergence, JS-divergence, Jef-divergence and our new porposed log-divergence. Here we only show the complete process of progressive growing based on KL-divergence. 
-### KL-divergence
-We train PGVGrow from low resolution (4x4) to higher resolution which depends on the training dataset. 
+We train PGVGrow model based on different f-divergence such as KL-divergence, JS-divergence, Jef-divergence and our new porposed LogD-divergence. Here we only show the complete process of progressive growing based on KL-divergence. 
 
 <table align='center'>
 <tr align='center'>
@@ -77,7 +75,7 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 </table>
 
 
-<table align='center'>
+<!-- <table align='center'>
 <tr align='center'>
 <td> Resolution </td>
 <td> 4x4 </td>
@@ -103,7 +101,7 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 <td><img src = '' height = '196px'>
 </tr>
 </table>
-
+ -->
 
 <table align='center'>
 <tr align='center'>
@@ -152,13 +150,13 @@ We train PGVGrow from low resolution (4x4) to higher resolution which depends on
 We show all dataset final resolution results from each f-divergence.
 
 <table align='center'>
-<tr align='center'>
+<!-- <tr align='center'>
 <td> </td>
 <td> KL-divergence </td>
 <td> JS-divergence </td>
 <td> Jef-divergence </td>
 <td> LogD-divergence </td>
-</tr>
+</tr> -->
 <tr align='center'>
 <td> MNIST </td>
 <td><img src = 'examples/mnist-KL.png' height = '160px'>
@@ -166,13 +164,13 @@ We show all dataset final resolution results from each f-divergence.
 <td><img src = 'examples/mnist-Jef.png' height = '160px'>
 <td><img src = 'examples/mnist-LogD.png' height = '160px'>
 </tr>
-<tr align='center'>
+<!-- <tr align='center'>
 <td> Score </td>
 <td> FID: 2.00 </td>
 <td> FID: 1.85 </td>
 <td> FID: 1.94 </td>
 <td> FID: 2.15 </td>
-</tr>
+</tr> -->
 <tr align='center'>
 <td> Fashion-MNIST </td>
 <td><img src = 'examples/fashionmnist-KL.png' height = '160px'>
@@ -180,13 +178,13 @@ We show all dataset final resolution results from each f-divergence.
 <td><img src = 'examples/fashionmnist-Jef.png' height = '160px'>
 <td><img src = 'examples/fashionmnist-LogD.png' height = '160px'>
 </tr>
-<tr align='center'>
+<!-- <tr align='center'>
 <td> Score </td>
 <td> FID: 5.20 </td>
 <td> FID: 5.29 </td>
 <td> FID: 5.55 </td>
 <td> FID: 5.48 </td>
-</tr>
+</tr> -->
 <tr align='center'>
 <td> CIFAR-10 </td>
 <td><img src = 'examples/cifar-KL.png' height = '160px'>
@@ -194,13 +192,13 @@ We show all dataset final resolution results from each f-divergence.
 <td><img src = 'examples/cifar-Jef.png' height = '160px'>
 <td><img src = 'examples/cifar-LogD.png' height = '160px'>
 </tr>
-<tr align='center'>
+<!-- <tr align='center'>
 <td> Score </td>
 <td> FID: 20.70 </td>
 <td> FID: 20.63 </td>
 <td> FID: 20.27 </td>
 <td> FID: 21.93 </td>
-</tr>
+</tr> -->
 <tr align='center'>
 <td> CelebA </td>
 <td><img src = 'examples/celeba-KL.png' height = '160px'>
@@ -208,13 +206,13 @@ We show all dataset final resolution results from each f-divergence.
 <td><img src = 'examples/celeba-Jef.png' height = '160px'>
 <td><img src = 'examples/celeba-LogD.png' height = '160px'>
 </tr>
-<tr align='center'>
+<!-- <tr align='center'>
 <td> Score </td>
 <td> FID: 7.21 </td>
 <td> FID: 7.48 </td>
 <td> FID: 6.66 </td>
 <td> FID: 7.89 </td>
-</tr>
+</tr> -->
 <tr align='center'>
 <td> LSUN(Church) </td>
 <td><img src = 'examples/church-KL.png' height = '160px'>
@@ -222,13 +220,13 @@ We show all dataset final resolution results from each f-divergence.
 <td><img src = 'examples/church-Jef.png' height = '160px'>
 <td><img src = 'examples/church-LogD.png' height = '160px'>
 </tr>
-<tr align='center'>
+<!-- <tr align='center'>
 <td> Score </td>
 <td> FID: 15.07 </td>
 <td> FID: 28.43 </td>
 <td> FID: 16.01 </td>
 <td> FID: 13.09 </td>
-</tr>
+</tr> -->
 </table>
 
 ### High resolution generation
@@ -239,10 +237,10 @@ Here we show the high resolution generation results (256x256) based on LSUN (Chu
 
 ## Usage 
 ### Command
-We provide all arguments with default value and you can run this program simply by 
+We provide all arguments with default value and you can run this program with CIFAR-10 dataset by 
+`bash cifar10.sh`. Training with other datasets is similar.
 
-```python train.py```
-### Arguments 
+### Arguments in `train.py`
 * `--gpu`: Specific GPU to use. *Default*: `0`
 * `--dataset`: Training dataset. *Default*: `mnist`
 * `--divergence`: f-divergence. *Default*: `KL`
@@ -251,7 +249,7 @@ We provide all arguments with default value and you can run this program simply 
 * `--init_resolution`: Initial resolution of images. *Default*: `4`
 * `--z_dim`: Dimension of latent vector. *Default*: `512`
 * `--dur_nimg`: Number of images used for a phase. *Default*: `600000`
-* `--total_nimg`: Total number of images used for training. *Default*: `12000000`
+* `--total_nimg`: Total number of images used for training. *Default*: `18000000`
 * `--pool_size`: Number of batches of a pool. *Default*: `1`
 * `--T`: Number of loops for moving particles. *Default*: `1`
 * `--U`: Number of loops for training D. *Default*: `1`
