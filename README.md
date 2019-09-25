@@ -214,14 +214,14 @@ We show all dataset final resolution results from each f-divergence.
 <td> FID: 7.89 </td>
 </tr> -->
 <tr align='center'>
-<td> LSUN-Bedroom (256x256) </td>
+<td> LSUN-Bedroom </td>
 <td><img src = 'examples/bedroom-KL.png' height = '160px'>
 <td><img src = 'examples/bedroom-JS.png' height = '160px'>
 <td><img src = 'examples/bedroom-Jef.png' height = '160px'>
 <td><img src = 'examples/bedroom-LogD.png' height = '160px'>
 </tr>
 <tr align='center'>
-<td> LSUN-Church (256x256) </td>
+<td> LSUN-Church </td>
 <td><img src = 'examples/church-KL.png' height = '160px'>
 <td><img src = 'examples/church-JS.png' height = '160px'>
 <td><img src = 'examples/church-Jef.png' height = '160px'>
