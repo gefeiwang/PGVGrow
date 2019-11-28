@@ -22,6 +22,7 @@ tf.app.flags.DEFINE_integer('dur_nimg', 600000, 'Number of images used for a pha
 tf.app.flags.DEFINE_integer('total_nimg', 18000000, 'Total number of images used for training')
 tf.app.flags.DEFINE_integer('pool_size', 1, 'Number of batches of a pool')
 tf.app.flags.DEFINE_integer('T', 1, 'Number of loops for moving particles')
+tf.app.flags.DEFINE_float('step_size', 1.0, 'Step size for moving particles')
 tf.app.flags.DEFINE_integer('U', 1, 'Number of loops for training D')
 tf.app.flags.DEFINE_integer('L', 1, 'Number of loops for training G')
 tf.app.flags.DEFINE_integer('num_row', 10, 'Number images in a line of image grid')
@@ -85,7 +86,7 @@ def lod(num_img):
     else: 
         return np.log2(resolution/FLAGS.init_resolution) - ph_num - (remain_num - FLAGS.dur_nimg) / FLAGS.dur_nimg
 
-def coef_div(d_score, coef=1):
+def coef_div(d_score, coef=FLAGS.step_size):
 
     if FLAGS.divergence == 'KL':
         s = np.ones_like(d_score)
@@ -138,10 +139,10 @@ vars_g = [var for var in tf.trainable_variables() if var.name.startswith('genera
 vars_d = [var for var in tf.trainable_variables() if var.name.startswith('discriminator')]
 
 optimizer_d = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.0, beta2=0.99, epsilon=1e-8, name='opt_d')
-update_d    = optimizer_d.minimize(loss_d, var_list=vars_d)
+update_d = optimizer_d.minimize(loss_d, var_list=vars_d)
 
 optimizer_g = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.0, beta2=0.99, epsilon=1e-8, name='opt_g')
-update_g    = optimizer_g.minimize(loss_g, var_list=vars_g)
+update_g = optimizer_g.minimize(loss_g, var_list=vars_g)
 
 reset_optimizer_d = tf.variables_initializer(optimizer_d.variables())
 reset_optimizer_g = tf.variables_initializer(optimizer_g.variables())
@@ -218,8 +219,8 @@ with tf.Session() as sess:
 
             # move particles
             d_score = sess.run(d_fake_logits, feed_dict={G_z_p: P, lod_in: cur_lod})
-            grad    = sess.run(d_fake_grad, feed_dict={G_z_p: P, lod_in: cur_lod})
-            P       += coef_div(d_score) * grad
+            grad = sess.run(d_fake_grad, feed_dict={G_z_p: P, lod_in: cur_lod})
+            P += coef_div(d_score) * grad
 
         # optimize generator:
         for l in range(FLAGS.L):
@@ -237,7 +238,7 @@ with tf.Session() as sess:
 
             tick_kimg = (num_img // 1000)
             real_loss, fake_loss = sess.run([loss_d_real, loss_d_fake], feed_dict={x_p: x, G_z_p: P[sample_index], lod_in: cur_lod})
-            G_loss               = sess.run(loss_g, feed_dict={z_p: Sz, G_Sz_p: P, lod_in: cur_lod})
+            G_loss = sess.run(loss_g, feed_dict={z_p: Sz, G_Sz_p: P, lod_in: cur_lod})
             
             print('num_img: %d ' % num_img, '  |  lod_in: %.2f' % cur_lod, '\n',
                   'D real loss: %.6f' % real_loss, '  |  D fake loss: %.6f' % fake_loss, '  |  Projection loss: %.6f' % G_loss)
