@@ -15,7 +15,7 @@ tf.app.flags.DEFINE_string('dataset', 'mixture_of_gaussians', 'Data distribution
 tf.app.flags.DEFINE_string('divergence', 'KL', 'Divergence')
 tf.app.flags.DEFINE_string('path', './results', 'Output path')
 tf.app.flags.DEFINE_integer('seed', 1234, 'Random Seed')
-tf.app.flags.DEFINE_integer('num_steps', 200000, 'Number of steps for training (outer loop)')
+tf.app.flags.DEFINE_integer('num_steps', 300000, 'Number of steps for training (outer loop)')
 tf.app.flags.DEFINE_integer('batch_size', 1000, 'Batch size')
 tf.app.flags.DEFINE_integer('plot_size', 20000, 'Number of points for plot')
 tf.app.flags.DEFINE_integer('pool_size', 5, 'Number of batches of a pool')
@@ -29,6 +29,9 @@ tf.app.flags.DEFINE_float('coef_smoothing', 0.99, 'Coefficient of generator movi
 FLAGS = tf.app.flags.FLAGS
 
 os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu
+
+np.random.seed(FLAGS.seed)
+tf.random.set_random_seed(FLAGS.seed)
 
 out_path = os.path.join(FLAGS.path, '%s-%s' % (FLAGS.dataset, FLAGS.divergence))
 if not os.path.exists(out_path):
