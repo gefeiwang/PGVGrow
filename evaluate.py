@@ -45,7 +45,7 @@ def calculate_fid(data_dir1, data_dir2, batch_size, sess):
     images1, images2 = np.array(images1), np.array(images2)
     if len(images1.shape) == 3:
         images1 = np.tile(images1[:, :, :,np.newaxis], (1, 1, 1, 3))
-        images2 = np.tile(images1[:, :, :,np.newaxis], (1, 1, 1, 3))
+        images2 = np.tile(images2[:, :, :,np.newaxis], (1, 1, 1, 3))
     assert len(images1.shape) == 4 and len(images2.shape) == 4
 
     # calculating
