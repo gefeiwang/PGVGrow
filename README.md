@@ -277,6 +277,9 @@ We provide all arguments with default value and you can run this program with CI
 * `--resume_training`: Whether resume Training or not. *Default*: `False`
 * `--resume_num`: Resume number of images. *Default*: `0`
 
+## Link
+The Portrait dataset is available at https://drive.google.com/file/d/1j_a2OXB_2rhaVqojzSPJLv_bDrSjHguR/view?usp=sharing
+
 ## Reference
 The implementation is motivated based on the projects:
 [1]https://github.com/tkarras/progressive_growing_of_gans
