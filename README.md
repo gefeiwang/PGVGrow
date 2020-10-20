@@ -1,4 +1,4 @@
-# Progressive Growing of Variational Gradient Flow
+# Variational Gradient Flow for Deep Generative Learning
 A tensorflow implementation of VGrow by using progressive growing method descriped in the following paper:
 * [Deep Generative Learning via Variational Gradient Flow](https://arxiv.org/abs/1901.08469).
 * [Progressive Growing of GANs for Improved Quality, Stability, and Variation](https://arxiv.org/abs/1710.10196).
@@ -13,7 +13,7 @@ A tensorflow implementation of VGrow by using progressive growing method descrip
   * NVIDIA driver 410.93 , CUDA V10.0.130, RTX 2080 Ti
   
 ## Results
-We train PGVGrow model based on different f-divergence such as KL-divergence, JS-divergence, Jef-divergence and our new porposed LogD-divergence. Here we only show the complete process of progressive growing based on KL-divergence. 
+We train VGrow-Pg model based on different f-divergence such as KL-divergence, JS-divergence, Jef-divergence and our new porposed LogD-divergence. Here we only show the complete process of progressive growing based on KL-divergence. 
 
 <table align='center'>
 <tr align='center'>
@@ -150,13 +150,13 @@ We train PGVGrow model based on different f-divergence such as KL-divergence, JS
 We show all dataset final resolution results from each f-divergence.
 
 <table align='center'>
-<!-- <tr align='center'>
+<tr align='center'>
 <td> </td>
 <td> KL-divergence </td>
 <td> JS-divergence </td>
-<td> Jef-divergence </td>
-<td> LogD-divergence </td>
-</tr> -->
+<td> Jeffreys-divergence </td>
+<td> logD-divergence </td>
+</tr>
 <tr align='center'>
 <td> MNIST </td>
 <td><img src = 'examples/mnist-KL.png' height = '160px'>
@@ -200,55 +200,83 @@ We show all dataset final resolution results from each f-divergence.
 <td> FID: 21.93 </td>
 </tr> -->
 <tr align='center'>
-<td> CelebA </td>
-<td><img src = 'examples/celeba-KL.png' height = '160px'>
-<td><img src = 'examples/celeba-JS.png' height = '160px'>
-<td><img src = 'examples/celeba-Jef.png' height = '160px'>
-<td><img src = 'examples/celeba-LogD.png' height = '160px'>
-</tr>
-<!-- <tr align='center'>
-<td> Score </td>
-<td> FID: 7.21 </td>
-<td> FID: 7.48 </td>
-<td> FID: 6.66 </td>
-<td> FID: 7.89 </td>
-</tr> -->
-<tr align='center'>
 <td> LSUN-Bedroom </td>
 <td><img src = 'examples/bedroom-KL.png' height = '160px'>
 <td><img src = 'examples/bedroom-JS.png' height = '160px'>
 <td><img src = 'examples/bedroom-Jef.png' height = '160px'>
 <td><img src = 'examples/bedroom-LogD.png' height = '160px'>
 </tr>
+</table>
+
+<table align='center'>
+<tr align='center'>
+<td> </td>
+<td> KL-divergence </td>
+<td> JS-divergence </td>
+</tr>
+<tr align='center'>
+<td> CelebA </td>
+<td><img src = 'examples/celeba-KL.png' height = '160px'>
+<td><img src = 'examples/celeba-JS.png' height = '160px'>
+</tr>
+<tr align='center'>
+<td> </td>
+<td> Jeffreys-divergence </td>
+<td> logD-divergence </td>
+</tr>
+<tr align='center'>
+<td> CelebA </td>
+<td><img src = 'examples/celeba-Jef.png' height = '160px'>
+<td><img src = 'examples/celeba-LogD.png' height = '160px'>
+</tr>
+<tr align='center'>
+<td> </td>
+<td> KL-divergence </td>
+<td> JS-divergence </td>
+</tr>
 <tr align='center'>
 <td> LSUN-Church </td>
 <td><img src = 'examples/church-KL.png' height = '160px'>
 <td><img src = 'examples/church-JS.png' height = '160px'>
+</tr>
+<tr align='center'>
+<td> </td>
+<td> Jeffreys-divergence </td>
+<td> logD-divergence </td>
+</tr>
+<tr align='center'>
+<td> LSUN-Church </td>
 <td><img src = 'examples/church-Jef.png' height = '160px'>
 <td><img src = 'examples/church-LogD.png' height = '160px'>
 </tr>
-<!-- <tr align='center'>
-<td> Score </td>
-<td> FID: 15.07 </td>
-<td> FID: 28.43 </td>
-<td> FID: 16.01 </td>
-<td> FID: 13.09 </td>
-</tr> -->
+<tr align='center'>
+<td> </td>
+<td> KL-divergence </td>
+<td> JS-divergence </td>
+</tr>
 <tr align='center'>
 <td> Portrait </td>
 <td><img src = 'examples/portrait-KL.png' height = '160px'>
 <td><img src = 'examples/portrait-JS.png' height = '160px'>
+</tr>
+<tr align='center'>
+<td> </td>
+<td> Jeffreys-divergence </td>
+<td> logD-divergence </td>
+</tr>
+<tr align='center'>
+<td> Portrait </td>
 <td><img src = 'examples/portrait-Jef.png' height = '160px'>
 <td><img src = 'examples/portrait-LogD.png' height = '160px'>
 </tr>
 </table>
 
-### High resolution generation
+<!-- ### High resolution generation
 Here we show the high resolution generation results (256x256) based on LSUN (Church) dataset.
 
 ![alt text](https://github.com/gefeiwang/PGVGrow/blob/master/examples/churchhigh.png)<br>
 
-
+ -->
 ## Usage 
 ### Command
 We provide all arguments with default value and you can run this program with CIFAR-10 dataset by 
@@ -280,6 +308,8 @@ We provide all arguments with default value and you can run this program with CI
 ## Link
 The Portrait dataset is available at https://drive.google.com/file/d/1j_a2OXB_2rhaVqojzSPJLv_bDrSjHguR/view?usp=sharing
 
-## Reference
-The implementation is motivated based on the projects:
-[1]https://github.com/tkarras/progressive_growing_of_gans
+## Developer and Maintainer
+Gefei WANG, HKUST
+
+## Contact Information
+Please feel free to contact Gefei WANG gwangas@connect.ust.hk or Prof. Can YANG macyang@ust.hk if any questions.
