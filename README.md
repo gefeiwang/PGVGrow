@@ -103,7 +103,7 @@ We train VGrow-Pg model based on different f-divergence such as KL-divergence, J
 </table>
  -->
 
-<table align='center'>
+<!-- <table align='center'>
 <tr align='center'>
 <td> Resolution </td>
 <td> 4x4 </td>
@@ -145,7 +145,7 @@ We train VGrow-Pg model based on different f-divergence such as KL-divergence, J
 <td> </td>
 </tr>
 </table>
-
+ -->
 ### Other-divergence
 We show all dataset final resolution results from each f-divergence.
 
