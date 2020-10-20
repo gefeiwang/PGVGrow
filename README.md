@@ -274,7 +274,8 @@ We show all dataset final resolution results from each f-divergence.
 ### Latent space manipulation
 We first generate 10,000 faces using the network trained with CelebA dataset and KL divergence. We use the age and gender classification networks provided in https://github.com/dpressel/rude-carnie for those generated faces, and use the results to find a latent direction that controls these semantics. For example, we use a logistic regression for gender and use the normal of decision boundary as the direction.
 ![alt text](examples/gender.png)
-![alt text](examples/gender1.gif)<br>![alt text](examples/gender2.gif)<br>![alt text](examples/gender3.gif)<br>![alt text](examples/gender4.gif)<br>![alt text](examples/gender5.gif)<br>![alt text](examples/gender6.gif)<br>
+<img height="320px" src = 'examples/gender.png'/>
+![alt text](examples/gender1.gif)![alt text](examples/gender2.gif)![alt text](examples/gender3.gif)![alt text](examples/gender4.gif)![alt text](examples/gender5.gif)![alt text](examples/gender6.gif)
 
 ## Usage 
 ### Command
