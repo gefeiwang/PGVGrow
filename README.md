@@ -216,8 +216,8 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr align='center'>
 <td> CelebA </td>
-<td><img src = 'examples/celeba-KL.png' height = '160px'>
-<td><img src = 'examples/celeba-JS.png' height = '160px'>
+<td><img src = 'examples/celeba-KL.png' height = '320px'>
+<td><img src = 'examples/celeba-JS.png' height = '320px'>
 </tr>
 <tr align='center'>
 <td> </td>
@@ -226,8 +226,8 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr align='center'>
 <td> CelebA </td>
-<td><img src = 'examples/celeba-Jef.png' height = '160px'>
-<td><img src = 'examples/celeba-LogD.png' height = '160px'>
+<td><img src = 'examples/celeba-Jef.png' height = '320px'>
+<td><img src = 'examples/celeba-LogD.png' height = '320px'>
 </tr>
 <tr align='center'>
 <td> </td>
@@ -236,8 +236,8 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr align='center'>
 <td> LSUN-Church </td>
-<td><img src = 'examples/church-KL.png' height = '160px'>
-<td><img src = 'examples/church-JS.png' height = '160px'>
+<td><img src = 'examples/church-KL.png' height = '320px'>
+<td><img src = 'examples/church-JS.png' height = '320px'>
 </tr>
 <tr align='center'>
 <td> </td>
@@ -246,8 +246,8 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr align='center'>
 <td> LSUN-Church </td>
-<td><img src = 'examples/church-Jef.png' height = '160px'>
-<td><img src = 'examples/church-LogD.png' height = '160px'>
+<td><img src = 'examples/church-Jef.png' height = '320px'>
+<td><img src = 'examples/church-LogD.png' height = '320px'>
 </tr>
 <tr align='center'>
 <td> </td>
@@ -256,8 +256,8 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr align='center'>
 <td> Portrait </td>
-<td><img src = 'examples/portrait-KL.png' height = '160px'>
-<td><img src = 'examples/portrait-JS.png' height = '160px'>
+<td><img src = 'examples/portrait-KL.png' height = '320px'>
+<td><img src = 'examples/portrait-JS.png' height = '320px'>
 </tr>
 <tr align='center'>
 <td> </td>
@@ -266,8 +266,8 @@ We show all dataset final resolution results from each f-divergence.
 </tr>
 <tr align='center'>
 <td> Portrait </td>
-<td><img src = 'examples/portrait-Jef.png' height = '160px'>
-<td><img src = 'examples/portrait-LogD.png' height = '160px'>
+<td><img src = 'examples/portrait-Jef.png' height = '320px'>
+<td><img src = 'examples/portrait-LogD.png' height = '320px'>
 </tr>
 </table>
 
