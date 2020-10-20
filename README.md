@@ -270,13 +270,18 @@ We show all dataset final resolution results from each f-divergence.
 <td><img src = 'examples/portrait-LogD.png' height = '320px'>
 </tr>
 </table>
-
-<!-- ### High resolution generation
+<!-- 
+### High resolution generation
 Here we show the high resolution generation results (256x256) based on LSUN (Church) dataset.
 
-![alt text](https://github.com/gefeiwang/PGVGrow/blob/master/examples/churchhigh.png)<br>
-
+![alt text](examples/churchhigh.png)<br>
  -->
+
+### Latent space manipulation
+We first generate 10,000 faces using the network trained with CelebA dataset and KL divergence. We use the age and gender classification networks provided in https://github.com/dpressel/rude-carnie for those generated faces, and use the results to find a latent direction that controls these semantics. For example, we use a logistic regression for gender and use the normal of decision boundary as the direction.
+![alt text](examples/gender.png)<br>
+![alt text](examples/gender1.gif)<br>![alt text](examples/gender2.gif)<br>![alt text](examples/gender3.gif)<br>![alt text](examples/gender4.gif)<br>![alt text](examples/gender5.gif)<br>![alt text](examples/gender6.gif)<br>
+
 ## Usage 
 ### Command
 We provide all arguments with default value and you can run this program with CIFAR-10 dataset by 
